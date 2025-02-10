@@ -27,8 +27,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'stop smoking',
       theme: appTheme,
+      debugShowCheckedModeBanner: false,
       initialRoute: '/', // Set initialRoute to '/'
       routes: {
         '/': (context) => MainPage(), // Route '/' to MainPage

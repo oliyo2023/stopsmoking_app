@@ -35,9 +35,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('戒言'),
-      ),
       body: IndexedStack(
         index: _selectedIndex,
         children: [
