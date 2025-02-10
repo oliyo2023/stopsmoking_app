@@ -6,7 +6,6 @@ class ArticlePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('文章页')),
       body: const Center(child: Text('Article Page Content')),
     );
   }
