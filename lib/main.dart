@@ -3,11 +3,16 @@ import 'package:get/get.dart';
 import 'package:jieyan_app/pages/home_page.dart';
 import 'package:jieyan_app/pages/login_page.dart';
 import 'package:jieyan_app/pages/register_page.dart';
-import 'package:jieyan_app/theme/app_theme.dart'; // Import AppTheme
+import 'package:jieyan_app/theme/app_theme.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
+import 'package:jieyan_app/pages/profile_page.dart';
+import 'package:jieyan_app/pages/plan_page.dart'; // Import PlanPage
+import 'package:jieyan_app/pages/progress_page.dart'; // Import ProgressPage
+import 'package:jieyan_app/pages/article_page.dart'; // Import ArticlePage
+import 'package:jieyan_app/pages/my_page.dart'; // Import MyPage
 
 void main() {
-  Get.put(PocketBaseService()); // Put PocketBaseService into GetX
+  Get.put(PocketBaseService());
   runApp(const MyApp());
 }
 
@@ -19,35 +24,77 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // No need to check auth status for initial route anymore
-  // final PocketBaseService _pbService = Get.find();
-  // bool _isAuthenticated = false;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _checkAuthStatus();
-  // }
-
-  // Future<void> _checkAuthStatus() async {
-  //   if (_pbService.pb.authStore.isValid) {
-  //     setState(() {
-  //       _isAuthenticated = true;
-  //     });
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
       theme: appTheme,
-      initialRoute: '/home', // Always start at /home
+      initialRoute: '/home',
       routes: {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/home': (context) => const HomePage(),
+        '/profile': (context) => const ProfilePage(),
+        '/plan': (context) => const PlanPage(), // PlanPage route
+        '/progress': (context) => const ProgressPage(), // ProgressPage route
+        '/article': (context) => const ArticlePage(), // ArticlePage route
+        '/my': (context) => const MyPage(), // MyPage route
       },
+    );
+  }
+}
+
+class MainController extends GetxController {
+  var selectedIndex = 0.obs;
+
+  void onItemTapped(int index) {
+    selectedIndex.value = index;
+  }
+}
+
+class MainPage extends StatelessWidget {
+  final MainController controller = Get.put(MainController());
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Obx(() => [
+              HomePage(), // 首页
+              PlanPage(), // 计划页
+              ProgressPage(), // 进度页
+              ArticlePage(), // 文章页
+              MyPage(), // 我的页
+            ][controller.selectedIndex.value]),
+      ),
+      bottomNavigationBar: Obx(() => BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: '首页',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.assignment),
+                label: '计划',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.trending_up),
+                label: '进度',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.article),
+                label: '文章',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: '我的',
+              ),
+            ],
+            currentIndex: controller.selectedIndex.value,
+            selectedItemColor: appTheme.colorScheme.primary,
+            unselectedItemColor: Colors.grey,
+            onTap: controller.onItemTapped,
+          )),
     );
   }
 }

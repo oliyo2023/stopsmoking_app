@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:get/get.dart';
+import 'package:jieyan_app/pages/profile_page.dart';
+// Import LoginPage
+// Import RegisterPage
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _pbService = Get.find(); // Use Get.find() to retrieve the instance
+    _pbService = Get.find();
     _checkLoginStatus();
   }
 
@@ -39,17 +42,31 @@ class _HomePageState extends State<HomePage> {
         index: _selectedIndex,
         children: [
           // Study Section (Always visible)
-          Center(child: Text('Study Section')),
+          Center(child: Text('首页内容')), // Changed text to 首页内容
 
           // My Section (Conditionally visible)
           _isLoggedIn
-              ? Center(child: Text('My Section'))
+              ? ProfilePage() // Display ProfilePage when logged in
               : Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Get.toNamed('/login');
-                    },
-                    child: Text('Login to access My Section'),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('请先登录以查看个人信息'), // Updated text to Chinese
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          Get.toNamed('/login');
+                        },
+                        child: Text('登录'), // Updated text to Chinese
+                      ),
+                      const SizedBox(height: 10),
+                      TextButton(
+                        onPressed: () {
+                          Get.toNamed('/register');
+                        },
+                        child: Text('注册'), // Updated text to Chinese
+                      ),
+                    ],
                   ),
                 ),
         ],
@@ -57,12 +74,12 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: '学习',
+            icon: Icon(Icons.home),
+            label: '首页', // Updated label to 首页
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: '我的',
+            label: '我的', // Updated label to 我的
           ),
         ],
         currentIndex: _selectedIndex,
