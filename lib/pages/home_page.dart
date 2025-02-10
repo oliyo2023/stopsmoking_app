@@ -71,24 +71,7 @@ class _HomePageState extends State<HomePage> {
                 ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '首页', // Updated label to 首页
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '我的', // Updated label to 我的
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-      ),
+      // Removed bottomNavigationBar from here
     );
   }
 }

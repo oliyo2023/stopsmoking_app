@@ -29,11 +29,12 @@ class _MyAppState extends State<MyApp> {
     return GetMaterialApp(
       title: 'Flutter Demo',
       theme: appTheme,
-      initialRoute: '/home',
+      initialRoute: '/', // Set initialRoute to '/'
       routes: {
+        '/': (context) => MainPage(), // Route '/' to MainPage
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
-        '/home': (context) => const HomePage(),
+        // '/home': (context) => const HomePage(), // Remove '/home' route
         '/profile': (context) => const ProfilePage(),
         '/plan': (context) => const PlanPage(), // PlanPage route
         '/progress': (context) => const ProgressPage(), // ProgressPage route
