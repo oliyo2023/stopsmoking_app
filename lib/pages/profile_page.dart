@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -60,9 +61,25 @@ class _ProfilePageState extends State<ProfilePage> {
         'nickname': _nicknameController.text,
         // Add other fields here
       };
-      await _pbService.pb
-          .collection('users')
-          .update(_pbService.pb.authStore.model!.id, body: updatedData);
+
+      List<http.MultipartFile> files = [];
+
+      // Add avatar upload to the request
+      if (_avatarImage != null) {
+        final bytes = await _avatarImage!.readAsBytes();
+        files.add(
+          http.MultipartFile.fromBytes(
+            'avatar',
+            bytes,
+            filename: _avatarImage!.path.split('/').last,
+          ),
+        );
+      }
+
+      await _pbService.pb.collection('users').update(
+          _pbService.pb.authStore.model!.id,
+          body: updatedData,
+          files: files);
 
       Get.snackbar('Success', 'Profile updated successfully!',
           backgroundColor: Colors.green, colorText: Colors.white);
