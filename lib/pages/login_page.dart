@@ -105,6 +105,12 @@ class _LoginPageState extends State<LoginPage> {
                     ? const CircularProgressIndicator()
                     : const Text('登录'),
               ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/register');
+                },
+                child: const Text('没有账号？去注册'),
+              ),
             ],
           ),
         ),
