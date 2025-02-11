@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:jieyan_app/pages/article_page.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/pages/profile_page.dart';
-import 'package:jieyan_app/pages/progress_page.dart'; // Import ProgressPage
+import 'package:jieyan_app/pages/progress_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,11 +17,14 @@ class _HomePageState extends State<HomePage> {
   late PocketBaseService _pbService;
   bool _isLoggedIn = false;
 
+  String _currentDate = '';
+
   @override
   void initState() {
     super.initState();
     _pbService = Get.find();
     _checkLoginStatus();
+    _currentDate = DateTime.now().toString().split(' ')[0];
   }
 
   Future<void> _checkLoginStatus() async {
@@ -44,11 +48,40 @@ class _HomePageState extends State<HomePage> {
         index: _selectedIndex,
         children: [
           // Study Section (Always visible)
-          Center(child: Text('首页内容')), // Changed text to 首页内容
-
-          // Progress Page
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('今日戒烟进度',
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      await _pbService.submitCheckin(
+                        date: _currentDate,
+                        smokeCount: 0, // Default value for testing
+                        reason: '无', // Default value for testing
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('打卡成功！')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('打卡失败，请重试！')),
+                      );
+                    }
+                  },
+                  child: Text('每日打卡'),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
           ProgressPage(),
-
+          ArticlePage(),
           // My Section (Conditionally visible)
           _MySection(isLoggedIn: _isLoggedIn),
         ],
@@ -58,6 +91,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: '首页',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.article),
+            label: '学习',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.timeline),

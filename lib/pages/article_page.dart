@@ -1,42 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:jieyan_app/services/pocketbase_service.dart';
+import 'package:get/get.dart';
+import 'package:jieyan_app/controllers/article_controller.dart';
 
-class ArticlePage extends StatefulWidget {
-  const ArticlePage({super.key});
+class ArticlePage extends StatelessWidget {
+  ArticlePage({Key? key}) : super(key: key);
 
-  @override
-  State<ArticlePage> createState() => _ArticlePageState();
-}
-
-class _ArticlePageState extends State<ArticlePage> {
-  late final PocketBaseService _pbService;
-
-  @override
-  void initState() {
-    super.initState();
-    _pbService = PocketBaseService(); // Initialize PocketBaseService
-  }
-
-  Future<void> _logout() async {
-    _pbService.pb.authStore.clear();
-    Navigator.pushReplacementNamed(context, '/login');
-  }
+  final ArticleController articleController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Article Page'),
-        actions: [
-          IconButton(
-            onPressed: _logout,
-            icon: const Icon(Icons.logout),
-          ),
-        ],
+        title: Text('Articles'),
       ),
-      body: const Center(
-        child: Text('Welcome to the Article Page!'),
-      ),
+      body: Obx(() {
+        if (articleController.isLoading &&
+            articleController.articleList.isEmpty) {
+          return Center(child: CircularProgressIndicator());
+        } else if (articleController.articleList.isEmpty) {
+          return Center(child: Text('No articles found.'));
+        } else {
+          return RefreshIndicator(
+            onRefresh: () async {
+              articleController.currentPage = 1;
+              articleController.articleList.clear();
+              await articleController.fetchArticles();
+            },
+            child: ListView.builder(
+              itemCount: articleController.articleList.length,
+              itemBuilder: (context, index) {
+                final article = articleController.articleList[index];
+                return Card(
+                  child: ListTile(
+                    title: Text(article.data['title'] ?? 'No Title'),
+                    onTap: () {
+                      Get.toNamed('/article/${article.id}');
+                    },
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      }),
     );
   }
 }
