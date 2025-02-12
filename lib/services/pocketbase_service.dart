@@ -18,4 +18,23 @@ class PocketBaseService {
       'reason': reason,
     });
   }
+
+  Future<List<RecordModel>> getArticles(int page, int perPage) async {
+    final records = await _pb.collection('posts').getList(
+          page: page,
+          perPage: perPage,
+          fields: 'id,title,created,updated',
+        );
+    return records.items;
+  }
+
+  Future<RecordModel?> getArticleById(String id) async {
+    try {
+      final record = await _pb.collection('posts').getOne(id);
+      return record;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 }

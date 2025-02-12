@@ -25,20 +25,18 @@ class ArticleController extends GetxController {
   }
 
   Future<void> fetchArticles() async {
+    _isLoading.value = true; // Set loading to true initially
+    update();
     try {
-      final records = await pbService.pb.collection('posts').getList(
-          page: _page.value,
-          perPage: 10,
-          fields: 'id,title,created,updated'); // Exclude content field
-      _articles.addAll(records.items);
-      _isLoading.value = false;
-      _hasMore.value = records.items.isNotEmpty;
-      update();
+      final records = await pbService.getArticles(_page.value, 10);
+      _articles.addAll(records);
+      _hasMore.value = records.isNotEmpty;
     } catch (e) {
-      _isLoading.value = false;
-      update();
       // Handle error (e.g., show a snackbar)
       print(e);
+    } finally {
+      _isLoading.value = false;
+      update();
     }
   }
 
@@ -48,25 +46,21 @@ class ArticleController extends GetxController {
     update();
     _page.value = _page.value + 1;
     try {
-      final records = await pbService.pb.collection('posts').getList(
-          page: _page.value,
-          perPage: 10,
-          fields: 'id,title,created,updated'); // Exclude content field
-      _articles.addAll(records.items);
-      _isLoading.value = false;
-      _hasMore.value = records.items.isNotEmpty;
-      update();
+      final records = await pbService.getArticles(_page.value, 10);
+      _articles.addAll(records);
+      _hasMore.value = records.isNotEmpty;
     } catch (e) {
-      _isLoading.value = false;
-      update();
       // Handle error (e.g., show a snackbar)
       print(e);
+    } finally {
+      _isLoading.value = false;
+      update();
     }
   }
 
   Future<RecordModel?> getArticleById(String id) async {
     try {
-      final record = await pbService.pb.collection('posts').getOne(id);
+      final record = await pbService.getArticleById(id);
       return record;
     } catch (e) {
       print(e);

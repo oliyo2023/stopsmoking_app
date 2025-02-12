@@ -20,25 +20,39 @@ class ArticlePage extends StatelessWidget {
         } else if (articleController.articleList.isEmpty) {
           return Center(child: Text('No articles found.'));
         } else {
-          return RefreshIndicator(
-            onRefresh: () async {
-              articleController.currentPage = 1;
-              articleController.articleList.clear();
-              await articleController.fetchArticles();
+          return NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (scrollInfo.metrics.pixels ==
+                      scrollInfo.metrics.maxScrollExtent &&
+                  articleController.hasMore) {
+                articleController.loadMoreArticles();
+              }
+              return true;
             },
-            child: ListView.builder(
-              itemCount: articleController.articleList.length,
-              itemBuilder: (context, index) {
-                final article = articleController.articleList[index];
-                return Card(
-                  child: ListTile(
-                    title: Text(article.data['title'] ?? 'No Title'),
-                    onTap: () {
-                      Get.toNamed('/article/${article.id}');
-                    },
-                  ),
-                );
+            child: RefreshIndicator(
+              onRefresh: () async {
+                articleController.currentPage = 1;
+                articleController.articleList.clear();
+                await articleController.fetchArticles();
               },
+              child: ListView.builder(
+                itemCount: articleController.articleList.length +
+                    (articleController.hasMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == articleController.articleList.length) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  final article = articleController.articleList[index];
+                  return Card(
+                    child: ListTile(
+                      title: Text(article.data['title'] ?? 'No Title'),
+                      onTap: () {
+                        Get.toNamed('/article/${article.id}');
+                      },
+                    ),
+                  );
+                },
+              ),
             ),
           );
         }

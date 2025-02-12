@@ -66,11 +66,11 @@ class _HomePageState extends State<HomePage> {
                         reason: '无', // Default value for testing
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('打卡成功！')),
+                        SnackBar(content: Text('打卡成功!')),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('打卡失败，请重试！')),
+                        SnackBar(content: Text('打卡失败,请重试!')),
                       );
                     }
                   },
@@ -80,8 +80,8 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          ProgressPage(),
           ArticlePage(),
+          ProgressPage(),
           // My Section (Conditionally visible)
           _MySection(isLoggedIn: _isLoggedIn),
         ],
