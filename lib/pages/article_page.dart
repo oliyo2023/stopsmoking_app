@@ -4,23 +4,23 @@ import 'package:jieyan_app/controllers/article_controller.dart';
 import 'package:jieyan_app/pages/article_detail_page.dart';
 
 class ArticlePage extends StatelessWidget {
-  ArticlePage({Key? key}) : super(key: key);
+  const ArticlePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ArticleController articleController = Get.put(ArticleController());
+    Get.put(ArticleController());
     return Scaffold(
       appBar: AppBar(
-        title: Text('Articles'),
+        title: const Text('Articles'),
       ),
       body: GetBuilder<ArticleController>(
         builder: (controller) {
           if (controller.isLoading && controller.page == 1) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (controller.articles.isEmpty) {
-            return Center(child: Text('No articles found.'));
+            return const Center(child: Text('No articles found.'));
           }
 
           return ListView.builder(
@@ -37,7 +37,7 @@ class ArticlePage extends StatelessWidget {
                 );
               } else {
                 Future.microtask(() => controller.loadMoreArticles());
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
             },
           );
