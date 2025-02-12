@@ -22,12 +22,26 @@ class _ProfilePageState extends State<ProfilePage> {
   late final PocketBaseService _pbService;
   late RecordModel _userRecord;
   File? _avatarImage; // To store the selected avatar image
+  bool _isLoggedIn = false;
 
   @override
   void initState() {
     super.initState();
     _pbService = PocketBaseService();
-    _fetchUserProfile();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    if (_pbService.pb.authStore.isValid) {
+      setState(() {
+        _isLoggedIn = true;
+      });
+      _fetchUserProfile();
+    } else {
+      setState(() {
+        _isLoggedIn = false;
+      });
+    }
   }
 
   Future<void> _fetchUserProfile() async {
@@ -116,55 +130,84 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text('个人信息'),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Form(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: _pickAvatarImage,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage: _avatarImage != null
-                            ? FileImage(_avatarImage!)
-                            : null,
-                        child: _avatarImage == null
-                            ? Icon(Icons.camera_alt, size: 40)
-                            : null,
-                      ),
+      body: _isLoggedIn ? _buildProfileForm() : _buildLoginPrompt(),
+    );
+  }
+
+  Widget _buildProfileForm() {
+    return _isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: _pickAvatarImage,
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: _avatarImage != null
+                          ? FileImage(_avatarImage!)
+                          : null,
+                      child: _avatarImage == null
+                          ? Icon(Icons.camera_alt, size: 40)
+                          : null,
                     ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _nicknameController,
-                      decoration: const InputDecoration(labelText: '昵称'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '请输入昵称';
-                        }
-                        return null;
-                      },
-                    ),
-                    // Add more form fields for other profile details
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: _isLoading
-                          ? null
-                          : () {
-                              if (_formKey.currentState!.validate()) {
-                                _updateUserProfile();
-                              }
-                            },
-                      child: _isLoading
-                          ? const CircularProgressIndicator()
-                          : const Text('保存'),
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextFormField(
+                    controller: _nicknameController,
+                    decoration: const InputDecoration(labelText: '昵称'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '请输入昵称';
+                      }
+                      return null;
+                    },
+                  ),
+                  // Add more form fields for other profile details
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _isLoading
+                        ? null
+                        : () {
+                            if (_formKey.currentState!.validate()) {
+                              _updateUserProfile();
+                            }
+                          },
+                    child: _isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text('保存'),
+                  ),
+                ],
               ),
             ),
+          );
+  }
+
+  Widget _buildLoginPrompt() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('请先登录以查看个人信息'),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Get.toNamed('/login');
+            },
+            child: Text('登录'),
+          ),
+          const SizedBox(height: 10),
+          TextButton(
+            onPressed: () {
+              Get.toNamed('/register');
+            },
+            child: Text('注册'),
+          ),
+        ],
+      ),
     );
   }
 }

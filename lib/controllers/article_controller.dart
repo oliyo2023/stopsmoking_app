@@ -9,34 +9,27 @@ class ArticleController extends GetxController {
   final _hasMore = true.obs;
   final _page = 1.obs;
 
-  List<RecordModel> get articles => _articles.value;
+  List<RecordModel> get articles => _articles;
   bool get isLoading => _isLoading.value;
-  bool get hasMoreArticles => _hasMore.value;
+  bool get hasMore => _hasMore.value;
   int get page => _page.value;
 
-  // Public methods to access private members
-  List<RecordModel> get articleList => _articles.value;
-  bool get hasMore => _hasMore.value;
-  int get currentPage => _page.value;
-  set page(int value) => _page.value = value;
-  set currentPage(int value) => _page.value = value;
   ArticleController() {
     fetchArticles();
   }
 
   Future<void> fetchArticles() async {
-    _isLoading.value = true; // Set loading to true initially
-    update();
     try {
       final records = await pbService.getArticles(_page.value, 10);
       _articles.addAll(records);
+      _isLoading.value = false;
       _hasMore.value = records.isNotEmpty;
+      update();
     } catch (e) {
-      // Handle error (e.g., show a snackbar)
-      print(e);
-    } finally {
       _isLoading.value = false;
       update();
+      // Handle error (e.g., show a snackbar)
+      print(e);
     }
   }
 
@@ -48,23 +41,14 @@ class ArticleController extends GetxController {
     try {
       final records = await pbService.getArticles(_page.value, 10);
       _articles.addAll(records);
+      _isLoading.value = false;
       _hasMore.value = records.isNotEmpty;
+      update();
     } catch (e) {
-      // Handle error (e.g., show a snackbar)
-      print(e);
-    } finally {
       _isLoading.value = false;
       update();
-    }
-  }
-
-  Future<RecordModel?> getArticleById(String id) async {
-    try {
-      final record = await pbService.getArticleById(id);
-      return record;
-    } catch (e) {
+      // Handle error (e.g., show a snackbar)
       print(e);
-      return null;
     }
   }
 }

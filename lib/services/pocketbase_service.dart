@@ -21,10 +21,10 @@ class PocketBaseService {
 
   Future<List<RecordModel>> getArticles(int page, int perPage) async {
     final records = await _pb.collection('posts').getList(
-          page: page,
-          perPage: perPage,
-          fields: 'id,title,created,updated',
-        );
+        page: page,
+        perPage: perPage,
+        fields: 'id,title,created,updated',
+        filter: 'cate="6193o6mlw3p6f4o"');
     return records.items;
   }
 

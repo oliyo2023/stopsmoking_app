@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/controllers/article_controller.dart';
+import 'package:jieyan_app/pages/article_detail_page.dart';
 
 class ArticlePage extends StatelessWidget {
-  ArticlePage({Key? key}) : super(key: key);
-
-  final ArticleController articleController = Get.find();
+  final ArticleController articleController = Get.put(ArticleController());
 
   @override
   Widget build(BuildContext context) {
@@ -13,50 +12,36 @@ class ArticlePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Articles'),
       ),
-      body: Obx(() {
-        if (articleController.isLoading &&
-            articleController.articleList.isEmpty) {
-          return Center(child: CircularProgressIndicator());
-        } else if (articleController.articleList.isEmpty) {
-          return Center(child: Text('No articles found.'));
-        } else {
-          return NotificationListener<ScrollNotification>(
-            onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo.metrics.pixels ==
-                      scrollInfo.metrics.maxScrollExtent &&
-                  articleController.hasMore) {
-                articleController.loadMoreArticles();
+      body: GetBuilder<ArticleController>(
+        builder: (controller) {
+          if (controller.isLoading && controller.page == 1) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (controller.articles.isEmpty) {
+            return Center(child: Text('No articles found.'));
+          }
+
+          return ListView.builder(
+            itemCount:
+                controller.articles.length + (controller.hasMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index < controller.articles.length) {
+                final article = controller.articles[index];
+                return ListTile(
+                  title: Text(article.getStringValue('title')),
+                  onTap: () {
+                    Get.to(() => ArticleDetailPage(articleId: article.id));
+                  },
+                );
+              } else {
+                Future.microtask(() => controller.loadMoreArticles());
+                return Center(child: CircularProgressIndicator());
               }
-              return true;
             },
-            child: RefreshIndicator(
-              onRefresh: () async {
-                articleController.currentPage = 1;
-                articleController.articleList.clear();
-                await articleController.fetchArticles();
-              },
-              child: ListView.builder(
-                itemCount: articleController.articleList.length +
-                    (articleController.hasMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index == articleController.articleList.length) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  final article = articleController.articleList[index];
-                  return Card(
-                    child: ListTile(
-                      title: Text(article.data['title'] ?? 'No Title'),
-                      onTap: () {
-                        Get.toNamed('/article/${article.id}');
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
           );
-        }
-      }),
+        },
+      ),
     );
   }
 }

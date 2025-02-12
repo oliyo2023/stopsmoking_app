@@ -1,50 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:jieyan_app/controllers/article_controller.dart';
+import 'package:pocketbase/pocketbase.dart';
+import 'package:jieyan_app/services/pocketbase_service.dart';
 
-class ArticleDetailPage extends StatelessWidget {
-  final String? articleId = Get.parameters['id'];
+class ArticleDetailPage extends StatefulWidget {
+  final String articleId;
 
-  ArticleDetailPage({Key? key}) : super(key: key);
+  ArticleDetailPage({Key? key, required this.articleId}) : super(key: key);
+
+  @override
+  _ArticleDetailPageState createState() => _ArticleDetailPageState();
+}
+
+class _ArticleDetailPageState extends State<ArticleDetailPage> {
+  final PocketBaseService _pbService = PocketBaseService();
+  RecordModel? _article;
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchArticle();
+  }
+
+  Future<void> _fetchArticle() async {
+    try {
+      final article = await _pbService.getArticleById(widget.articleId);
+      setState(() {
+        _article = article;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ArticleController articleController = Get.find();
+    if (_isLoading) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Article Details'),
+        ),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_error != null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Article Details'),
+        ),
+        body: Center(child: Text('Error: $_error')),
+      );
+    }
+
+    if (_article == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Article Details'),
+        ),
+        body: Center(child: Text('Article not found.')),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Article Details'),
       ),
-      body: FutureBuilder(
-        future: articleController.getArticleById(articleId!),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data == null) {
-            return Center(child: Text('Article not found.'));
-          } else {
-            final article = snapshot.data!;
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    article.data['title'] ?? 'No Title',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    article.data['content'] ?? 'No Content',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            );
-          }
-        },
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _article!.getStringValue('title'),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text(_article!.getStringValue('content')),
+          ],
+        ),
       ),
     );
   }
