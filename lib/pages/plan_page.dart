@@ -6,8 +6,12 @@ class PlanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('计划页')),
-      body: const Center(child: Text('Plan Page Content')),
+      appBar: AppBar(
+        title: const Text('Plan'),
+      ),
+      body: const Center(
+        child: Text('Plan Page Content'),
+      ),
     );
   }
 }

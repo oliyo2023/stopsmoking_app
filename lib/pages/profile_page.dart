@@ -151,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ? FileImage(_avatarImage!)
                           : null,
                       child: _avatarImage == null
-                          ? Icon(Icons.camera_alt, size: 40)
+                          ? const Icon(Icons.camera_alt, size: 40)
                           : null,
                     ),
                   ),
@@ -197,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
             onPressed: () {
               Get.toNamed('/login');
             },
-            child: Text('登录'),
+            child: const Text('登录'),
           ),
           const SizedBox(height: 10),
           TextButton(

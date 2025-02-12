@@ -7,6 +7,7 @@ import 'package:jieyan_app/theme/app_theme.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:jieyan_app/controllers/article_controller.dart';
+import 'package:jieyan_app/pages/plan_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/login', page: () => const LoginPage()),
         GetPage(name: '/register', page: () => const RegisterPage()),
         GetPage(name: '/profile', page: () => const ProfilePage()),
+        GetPage(name: '/plan', page: () => const PlanPage()),
       ],
     );
   }

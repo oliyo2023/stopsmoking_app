@@ -59,29 +59,42 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () async {
+                    if (!mounted) {
+                      return; // Check if mounted before async operation
+                    }
                     try {
                       await _pbService.submitCheckin(
                         date: _currentDate,
                         smokeCount: 0, // Default value for testing
                         reason: '无', // Default value for testing
                       );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: const Text('打卡成功!')),
-                      );
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('打卡成功!')),
+                        );
+                      }
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('打卡失败,请重试!')),
-                      );
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('打卡失败,请重试!')),
+                        );
+                      }
                     }
                   },
-                  child: Text('每日打卡'),
+                  child: const Text('每日打卡'),
                 ),
                 const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Get.toNamed('/plan');
+                  },
+                  child: const Text('查看戒烟计划'),
+                ),
               ],
             ),
           ),
-          ArticlePage(),
-          ProgressPage(),
+          const ArticlePage(),
+          const ProgressPage(),
           // My Section (Conditionally visible)
           _MySection(isLoggedIn: _isLoggedIn),
         ],
@@ -115,34 +128,33 @@ class _HomePageState extends State<HomePage> {
 
 class _MySection extends StatelessWidget {
   const _MySection({
-    Key? key,
     required this.isLoggedIn,
-  }) : super(key: key);
+  });
 
   final bool isLoggedIn;
 
   @override
   Widget build(BuildContext context) {
     return isLoggedIn
-        ? ProfilePage() // Display ProfilePage when logged in
+        ? const ProfilePage() // Display ProfilePage when logged in
         : Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('请先登录以查看个人信息'), // Updated text to Chinese
+                const Text('请先登录以查看个人信息'), // Updated text to Chinese
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     Get.toNamed('/login');
                   },
-                  child: Text('登录'), // Updated text to Chinese
+                  child: const Text('登录'), // Updated text to Chinese
                 ),
                 const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
                     Get.toNamed('/register');
                   },
-                  child: Text('注册'), // Updated text to Chinese
+                  child: const Text('注册'), // Updated text to Chinese
                 ),
               ],
             ),
