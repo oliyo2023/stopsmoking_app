@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:pocketbase/pocketbase.dart';
-import 'package:jieyan_app/services/pocketbase_service.dart';
+import 'package:get/get.dart';
+import 'package:jieyan_app/controllers/article_controller.dart';
 
+/// 文章详情页面
 class ArticleDetailPage extends StatefulWidget {
+  /// 文章 ID
   final String articleId;
 
+  /// 构造函数
+  /// 输入参数:
+  ///   articleId: 文章 ID (String)
   const ArticleDetailPage({super.key, required this.articleId});
 
   @override
@@ -12,79 +17,57 @@ class ArticleDetailPage extends StatefulWidget {
 }
 
 class ArticleDetailPageState extends State<ArticleDetailPage> {
-  final PocketBaseService _pbService = PocketBaseService();
-  RecordModel? _article;
-  bool _isLoading = true;
-  String? _error;
+  /// 文章控制器实例
+  late final ArticleController _articleController;
 
   @override
   void initState() {
     super.initState();
-    _fetchArticle();
-  }
-
-  Future<void> _fetchArticle() async {
-    try {
-      final article = await _pbService.getArticleById(widget.articleId);
-      setState(() {
-        _article = article;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
+    // 使用 Get.put() 创建 ArticleController 实例,并进行依赖注入
+    _articleController = Get.put(ArticleController());
+    // 调用控制器的 getArticleById 方法获取文章详情
+    _articleController.getArticleById(widget.articleId);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Article Details'),
-        ),
-        body: const Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    if (_error != null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Article Details'),
-        ),
-        body: Center(child: Text('Error: $_error')),
-      );
-    }
-
-    if (_article == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Article Details'),
-        ),
-        body: const Center(child: Text('Article not found.')),
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Article Details'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              _article!.getStringValue('title'),
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(_article!.getStringValue('content')),
-          ],
-        ),
-      ),
+      body: Obx(() {
+        // 使用 Obx 监听 _articleController 的变化
+        if (_articleController.isLoading) {
+          // 如果正在加载,显示加载指示器
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (_articleController.article == null) {
+          // 如果文章为空,显示 "文章未找到"
+          return const Center(child: Text('Article not found.'));
+        }
+
+        // 获取文章
+        final article = _articleController.article!;
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 显示文章标题
+              Text(
+                article.getStringValue('title'),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              // 显示文章内容
+              Text(article.getStringValue('content')),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
