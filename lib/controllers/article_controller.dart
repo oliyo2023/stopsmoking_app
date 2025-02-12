@@ -29,7 +29,6 @@ class ArticleController extends GetxController {
       _isLoading.value = false;
       update();
       // Handle error (e.g., show a snackbar)
-      print(e);
     }
   }
 
@@ -48,7 +47,6 @@ class ArticleController extends GetxController {
       _isLoading.value = false;
       update();
       // Handle error (e.g., show a snackbar)
-      print(e);
     }
   }
 }

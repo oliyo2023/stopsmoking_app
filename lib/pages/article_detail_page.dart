@@ -5,13 +5,13 @@ import 'package:jieyan_app/services/pocketbase_service.dart';
 class ArticleDetailPage extends StatefulWidget {
   final String articleId;
 
-  ArticleDetailPage({Key? key, required this.articleId}) : super(key: key);
+  const ArticleDetailPage({super.key, required this.articleId});
 
   @override
-  _ArticleDetailPageState createState() => _ArticleDetailPageState();
+  ArticleDetailPageState createState() => ArticleDetailPageState();
 }
 
-class _ArticleDetailPageState extends State<ArticleDetailPage> {
+class ArticleDetailPageState extends State<ArticleDetailPage> {
   final PocketBaseService _pbService = PocketBaseService();
   RecordModel? _article;
   bool _isLoading = true;
@@ -43,16 +43,16 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Article Details'),
+          title: const Text('Article Details'),
         ),
-        body: Center(child: CircularProgressIndicator()),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_error != null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Article Details'),
+          title: const Text('Article Details'),
         ),
         body: Center(child: Text('Error: $_error')),
       );
@@ -61,15 +61,15 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
     if (_article == null) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Article Details'),
+          title: const Text('Article Details'),
         ),
-        body: Center(child: Text('Article not found.')),
+        body: const Center(child: Text('Article not found.')),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Article Details'),
+        title: const Text('Article Details'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -78,9 +78,9 @@ class _ArticleDetailPageState extends State<ArticleDetailPage> {
           children: [
             Text(
               _article!.getStringValue('title'),
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(_article!.getStringValue('content')),
           ],
         ),

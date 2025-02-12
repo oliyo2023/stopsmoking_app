@@ -33,7 +33,6 @@ class PocketBaseService {
       final record = await _pb.collection('posts').getOne(id);
       return record;
     } catch (e) {
-      print(e);
       return null;
     }
   }

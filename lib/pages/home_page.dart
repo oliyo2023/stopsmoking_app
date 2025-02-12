@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('今日戒烟进度',
+                const Text('今日戒烟进度',
                     style:
                         TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                         reason: '无', // Default value for testing
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('打卡成功!')),
+                        SnackBar(content: const Text('打卡成功!')),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(

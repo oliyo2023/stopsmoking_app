@@ -4,10 +4,11 @@ import 'package:jieyan_app/controllers/article_controller.dart';
 import 'package:jieyan_app/pages/article_detail_page.dart';
 
 class ArticlePage extends StatelessWidget {
-  final ArticleController articleController = Get.put(ArticleController());
+  ArticlePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final ArticleController articleController = Get.put(ArticleController());
     return Scaffold(
       appBar: AppBar(
         title: Text('Articles'),

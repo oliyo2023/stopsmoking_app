@@ -191,7 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('请先登录以查看个人信息'),
+          const Text('请先登录以查看个人信息'),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
@@ -204,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
             onPressed: () {
               Get.toNamed('/register');
             },
-            child: Text('注册'),
+            child: const Text('注册'),
           ),
         ],
       ),
