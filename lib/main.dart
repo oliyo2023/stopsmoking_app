@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: '戒烟 App',
+      debugShowCheckedModeBanner: false,
       theme: appTheme,
       darkTheme: appTheme, // Use the same theme for dark theme
       themeMode: ThemeMode.system,
