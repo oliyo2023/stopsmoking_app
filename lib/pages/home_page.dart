@@ -70,23 +70,20 @@ class _HomePageState extends State<HomePage> {
                         if (!mounted) {
                           return; // 异步操作前检查是否 mounted
                         }
+                        final scaffoldMessenger = ScaffoldMessenger.of(context);
                         try {
                           await _pbService.submitCheckin(
                             date: _currentDate,
                             smokeCount: 0, // 测试用默认值
                             reason: '无', // 测试用默认值
                           );
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('打卡成功!')),
-                            );
-                          }
+                          scaffoldMessenger.showSnackBar(
+                            const SnackBar(content: Text('打卡成功!')),
+                          );
                         } catch (e) {
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('打卡失败,请重试!')),
-                            );
-                          }
+                          scaffoldMessenger.showSnackBar(
+                            const SnackBar(content: Text('打卡失败,请重试!')),
+                          );
                         }
                       },
                       child: const Text('每日打卡'),

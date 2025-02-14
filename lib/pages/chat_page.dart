@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jieyan_app/controllers/chat_controller.dart'; // Import the controller
+import 'package:jieyan_app/controllers/chat_controller.dart';
 
 class ChatPage extends StatelessWidget {
   const ChatPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ChatController()); // Instantiate the controller
+    // Use Get.lazyPut with fenix: true to preserve the controller's state
+    Get.lazyPut(() => ChatController(), fenix: true);
+    final controller = Get.find<ChatController>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('DeepSeek Chatbot')),
+      appBar: AppBar(
+        title: const Text('DeepSeek Chatbot'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
+        ),
+      ),
       body: Column(
         children: [
           Expanded(
-            child: GetBuilder<ChatController>(
-              // Use GetBuilder to rebuild on controller changes
-              builder: (controller) => ListView.builder(
+            child: Obx(
+              () => ListView.builder(
                 itemCount: controller.messages.length,
                 itemBuilder: (context, index) {
                   final message = controller.messages[index];

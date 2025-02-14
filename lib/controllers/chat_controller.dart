@@ -3,35 +3,38 @@ import 'package:get/get.dart';
 import 'package:jieyan_app/services/deepseek_service.dart';
 
 class ChatController extends GetxController {
+  final DeepSeekService _deepSeekService = Get.find();
   final textController = TextEditingController();
-  final messages = <Map<String, String>>[].obs;
-  late final DeepSeekService deepSeekService;
-  final isLoading = false.obs;
+  final RxList<Map<String, String>> messages = <Map<String, String>>[].obs;
+  RxBool isLoading = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    // Initialize DeepSeekService here
-    deepSeekService = DeepSeekService(
-        apiKey:
-            'MFVE5OIQGe1tKxuPHxXbJRnGlcNe4Qw8DNyo81xNLcp0jNf1DemfjXHGr+eUonZM'); // Replace with your actual API key
+  String _formatMessagesForApi() {
+    // Simple concatenation of messages.  Adjust as needed for the DeepSeek API.
+    StringBuffer formatted = StringBuffer();
+    for (var message in messages) {
+      formatted.write(message['content']);
+      formatted.write(" "); // Add space between messages
+    }
+    return formatted.toString();
   }
 
   Future<void> sendMessage() async {
-    if (textController.text.isEmpty) return;
+    final text = textController.text;
+    if (text.isEmpty) {
+      return;
+    }
 
-    final userMessage = textController.text;
-    messages.add({'role': 'user', 'content': userMessage});
     textController.clear();
 
-    isLoading.value = true;
+    messages.add({'role': 'user', 'content': text});
 
+    isLoading.value = true;
     try {
-      final response = await deepSeekService.getChatResponse(userMessage);
+      final response =
+          await _deepSeekService.getChatResponse(_formatMessagesForApi());
       messages.add({'role': 'assistant', 'content': response});
     } catch (e) {
-      Get.snackbar('Error', 'Failed to get response: $e',
-          backgroundColor: Colors.red, colorText: Colors.white);
+      messages.add({'role': 'assistant', 'content': 'Error: ${e.toString()}'});
     } finally {
       isLoading.value = false;
     }

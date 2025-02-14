@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:jieyan_app/controllers/login_controller.dart';
 
 class LoginPage extends GetView<LoginController> {
-  LoginPage({Key? key}) : super(key: key);
+  LoginPage({super.key});
   final _formKey = GlobalKey<FormState>();
 
   @override

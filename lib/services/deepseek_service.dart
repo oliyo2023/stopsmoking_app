@@ -15,7 +15,7 @@ class DeepSeekService {
         'Authorization': 'Bearer $apiKey',
       },
       body: jsonEncode({
-        'model': 'deepseek-r1-search', // 或者其他你想要使用的模型
+        'model': 'deepseek', // 或者其他你想要使用的模型
         'messages': [
           {'role': 'user', 'content': message},
         ],
@@ -24,7 +24,6 @@ class DeepSeekService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print(data);
       return data['choices'][0]['message']['content']; // 获取 DeepSeek 的回复
     } else {
       throw Exception('Failed to get response: ${response.statusCode}'); // 处理错误

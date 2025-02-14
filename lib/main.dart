@@ -3,6 +3,7 @@ import 'package:jieyan_app/theme/app_theme.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:jieyan_app/app_routes.dart';
+import 'package:jieyan_app/services/deepseek_service.dart';
 
 /// 主函数,程序入口
 void main() async {
@@ -12,6 +13,10 @@ void main() async {
   final pbService = PocketBaseService();
   // 使用 GetX 注册 PocketBaseService,以便全局访问
   Get.put(pbService);
+  // 初始化 DeepSeekService
+  Get.put(DeepSeekService(
+      apiKey:
+          "MFVE5OIQGe1tKxuPHxXbJRnGlcNe4Qw8DNyo81xNLcp0jNf1DemfjXHGr+eUonZM"));
   // 初始化 AppRoutes
 
   // 运行应用
