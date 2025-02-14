@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/controllers/article_controller.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 /// 文章详情页面
 class ArticleDetailPage extends StatefulWidget {
@@ -65,7 +66,7 @@ class ArticleDetailPageState extends State<ArticleDetailPage> {
               ),
               const SizedBox(height: 10),
               // 显示文章内容
-              Text(article.getStringValue('content')),
+              HtmlWidget(article.getStringValue('content')),
             ],
           ),
         );
