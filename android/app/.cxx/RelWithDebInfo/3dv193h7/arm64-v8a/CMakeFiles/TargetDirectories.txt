@@ -1,0 +1,2 @@
+/home/oliyo/project/jieyan_app/android/app/.cxx/RelWithDebInfo/3dv193h7/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/oliyo/project/jieyan_app/android/app/.cxx/RelWithDebInfo/3dv193h7/arm64-v8a/CMakeFiles/rebuild_cache.dir

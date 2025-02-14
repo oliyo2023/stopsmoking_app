@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 final appTheme = ThemeData(
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Color(0xFF6A1B9A),
+  ),
   colorScheme: const ColorScheme(
     primary: Color(0xFF6A1B9A), // 深紫色
     secondary: Color(0xFF9C27B0), // 中等紫色

@@ -12,7 +12,7 @@ class ChatPage extends GetView<ChatController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('你是哪个？'),
+        title: const Text('戒烟小助手'),
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
