@@ -26,7 +26,9 @@ class ArticleDetailPageState extends State<ArticleDetailPage> {
     // 使用 Get.put() 创建 ArticleController 实例,并进行依赖注入
     _articleController = Get.put(ArticleController());
     // 调用控制器的 getArticleById 方法获取文章详情
-    _articleController.getArticleById(widget.articleId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _articleController.getArticleById(widget.articleId);
+    });
   }
 
   @override

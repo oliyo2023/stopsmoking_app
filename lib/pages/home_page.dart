@@ -50,59 +50,73 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex, // 根据 _selectedIndex 显示不同的页面
+      body: Stack(
         children: [
-          // 学习区 (始终可见)
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('今日戒烟进度',
-                    style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (!mounted) {
-                      return; // 异步操作前检查是否 mounted
-                    }
-                    try {
-                      await _pbService.submitCheckin(
-                        date: _currentDate,
-                        smokeCount: 0, // 测试用默认值
-                        reason: '无', // 测试用默认值
-                      );
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('打卡成功!')),
-                        );
-                      }
-                    } catch (e) {
-                      if (mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('打卡失败,请重试!')),
-                        );
-                      }
-                    }
-                  },
-                  child: const Text('每日打卡'),
+          IndexedStack(
+            index: _selectedIndex, // 根据 _selectedIndex 显示不同的页面
+            children: [
+              // 学习区 (始终可见)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('今日戒烟进度',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (!mounted) {
+                          return; // 异步操作前检查是否 mounted
+                        }
+                        try {
+                          await _pbService.submitCheckin(
+                            date: _currentDate,
+                            smokeCount: 0, // 测试用默认值
+                            reason: '无', // 测试用默认值
+                          );
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('打卡成功!')),
+                            );
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('打卡失败,请重试!')),
+                            );
+                          }
+                        }
+                      },
+                      child: const Text('每日打卡'),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Get.toNamed('/plan'); // 跳转到戒烟计划页面
+                      },
+                      child: const Text('查看戒烟计划'),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Get.toNamed('/plan'); // 跳转到戒烟计划页面
-                  },
-                  child: const Text('查看戒烟计划'),
-                ),
-              ],
+              ),
+              const ArticlePage(), // 文章页面
+              const ProgressPage(), // 进度页面
+              // 我的区域 (根据登录状态条件显示)
+              _MySection(isLoggedIn: _isLoggedIn),
+            ],
+          ),
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: FloatingActionButton(
+              onPressed: () {
+                Get.toNamed('/chat');
+              },
+              child: const Icon(Icons.chat),
             ),
           ),
-          const ArticlePage(), // 文章页面
-          const ProgressPage(), // 进度页面
-          // 我的区域 (根据登录状态条件显示)
-          _MySection(isLoggedIn: _isLoggedIn),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
