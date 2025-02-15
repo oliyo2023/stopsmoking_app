@@ -9,7 +9,9 @@ CREATE TABLE plans (
     user TEXT NOT NULL REFERENCES users(id),
     start_date DATETIME NOT NULL,
     initial_amount REAL NOT NULL,
-    reduction_rate REAL NOT NULL
+    reduction_rate REAL NOT NULL,
+    target_amount REAL NOT NULL,
+    daily_reduction REAL NOT NULL
 );
 "
 
