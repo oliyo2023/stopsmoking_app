@@ -1,5 +1,5 @@
 name: jieyan_app
-description: "A new Flutter project."
+description: "AI stop smoking app."
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -43,4 +43,3 @@ flutter_launcher_icons:
     generate: true
     image_path: "assets/images/icon.png"
     icon_size: 48 # min:48, max:256, default: 48
-    
