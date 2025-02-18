@@ -1,10 +1,24 @@
 import 'package:pocketbase/pocketbase.dart';
 import 'package:jieyan_app/config.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class PocketBaseService {
-  final PocketBase _pb = PocketBase(pocketBaseUrl);
+class PocketBaseService extends GetxService {
+  late final PocketBase _pb;
 
   PocketBase get pb => _pb;
+
+  static PocketBaseService get to => Get.find<PocketBaseService>();
+
+  Future<PocketBaseService> init() async {
+    final prefs = await SharedPreferences.getInstance();
+    final store = AsyncAuthStore(
+      save: (String data) async => prefs.setString('pb_auth', data),
+      initial: prefs.getString('pb_auth'),
+    );
+    _pb = PocketBase(pocketBaseUrl, authStore: store);
+    return this;
+  }
 
   /// 提交每日打卡记录
   Future<void> submitCheckin({

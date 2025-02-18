@@ -1,11 +1,17 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:get/get.dart';
 
-class DeepSeekService {
+class DeepSeekService extends GetxService {
   final String apiKey; // DeepSeek API 密钥
   final String baseUrl = 'https://8.140.206.248/v1'; // DeepSeek API 基础 URL
 
   DeepSeekService({required this.apiKey});
+
+  Future<DeepSeekService> init() async {
+    // 在这里可以进行一些初始化操作，比如验证 API key
+    return this;
+  }
 
   Future<String> getChatResponse(String message) async {
     final response = await http.post(

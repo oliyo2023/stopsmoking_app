@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/plan_controller.dart';
 
-class PlanPage extends StatelessWidget {
-  const PlanPage({Key? key}) : super(key: key);
-
+class PlanPage extends GetView<PlanController> {
+  const PlanPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

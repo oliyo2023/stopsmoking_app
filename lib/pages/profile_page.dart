@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jieyan_app/providers/user_provider.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _pbService = PocketBaseService(); // 初始化 PocketBaseService
+    _pbService = Get.find<PocketBaseService>(); // 获取 PocketBaseService 实例
     _checkLoginStatus(); // 检查登录状态
   }
 
@@ -135,6 +136,21 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('个人信息'),
+        actions: [
+          if (_isLoggedIn)
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () async {
+                final userProvider = Get.find<UserProvider>();
+                userProvider.logout();
+                setState(() {
+                  _isLoggedIn = false;
+                });
+                Get.snackbar('提示', '已成功登出',
+                    backgroundColor: Colors.green, colorText: Colors.white);
+              },
+            ),
+        ],
       ),
       body: _isLoggedIn
           ? _buildProfileForm()

@@ -21,7 +21,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
-    _pbService = PocketBaseService(); // Initialize PocketBaseService
+    _pbService = Get.find<PocketBaseService>(); // 获取 PocketBaseService 实例
   }
 
   @override

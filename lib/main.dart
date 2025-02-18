@@ -4,21 +4,26 @@ import 'package:get/get.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:jieyan_app/app_routes.dart';
 import 'package:jieyan_app/services/deepseek_service.dart';
+import 'package:jieyan_app/providers/user_provider.dart';
+
+/// 初始化所有服务
+Future<void> initServices() async {
+  // 初始化 PocketBaseService
+  await Get.putAsync(() => PocketBaseService().init());
+  // 初始化 UserProvider
+  Get.put(UserProvider());
+  // 异步初始化 DeepSeekService
+  await Get.putAsync(() => DeepSeekService(
+      apiKey:
+          "MFVE5OIQGe1tKxuPHxXbJRnGlcNe4Qw8DNyo81xNLcp0jNf1DemfjXHGr+eUonZM").init());
+}
 
 /// 主函数,程序入口
 void main() async {
   // 确保 Flutter 引擎已初始化
   WidgetsFlutterBinding.ensureInitialized();
-  // 初始化 PocketBaseService
-  final pbService = PocketBaseService();
-  // 使用 GetX 注册 PocketBaseService,以便全局访问
-  Get.put(pbService);
-  // 初始化 DeepSeekService
-  Get.put(DeepSeekService(
-      apiKey:
-          "MFVE5OIQGe1tKxuPHxXbJRnGlcNe4Qw8DNyo81xNLcp0jNf1DemfjXHGr+eUonZM"));
-  // 初始化 AppRoutes
-
+  // 初始化所有服务
+  await initServices();
   // 运行应用
   runApp(const MyApp());
 }

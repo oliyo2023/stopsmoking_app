@@ -5,37 +5,27 @@ import 'package:get/get.dart';
 /// 文章控制器,使用 GetX 管理状态
 class ArticleController extends GetxController {
   /// PocketBase 服务实例
-  final PocketBaseService pbService = PocketBaseService();
-
+  final PocketBaseService pbService = Get.find<PocketBaseService>();
   /// 文章列表的可观察对象
   final _articles = <RecordModel>[].obs;
-
   /// 加载状态的可观察对象
   final _isLoading = true.obs;
-
   /// 是否有更多数据的可观察对象
   final _hasMore = true.obs;
-
   /// 当前页码的可观察对象
   final _page = 1.obs;
-
   /// 获取文章列表
   List<RecordModel> get articles => _articles;
-
   /// 获取加载状态
   bool get isLoading => _isLoading.value;
-
   /// 获取是否还有更多数据
   bool get hasMore => _hasMore.value;
-
   /// 获取当前页码
   int get page => _page.value;
-
   /// 构造函数,初始化时获取文章列表
   ArticleController() {
     fetchArticles();
   }
-
   /// 获取文章列表
   /// 无输入参数
   /// 无返回值
@@ -53,7 +43,6 @@ class ArticleController extends GetxController {
       // 处理错误 (例如,显示 snackbar)
     }
   }
-
   /// 加载更多文章
   /// 无输入参数
   /// 无返回值
@@ -74,13 +63,10 @@ class ArticleController extends GetxController {
       // 处理错误 (例如,显示 snackbar)
     }
   }
-
   /// 单个文章的可观察对象
   final Rx<RecordModel?> _article = Rx<RecordModel?>(null);
-
   /// 获取单个文章
   RecordModel? get article => _article.value;
-
   /// 根据 ID 获取单个文章
   /// 输入参数:
   ///   id: 文章 ID (String)

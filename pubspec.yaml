@@ -16,6 +16,7 @@ dependencies:
   google_generative_ai: ^0.4.6
   http: ^1.2.1
   flutter_widget_from_html: ^0.15.3
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:
