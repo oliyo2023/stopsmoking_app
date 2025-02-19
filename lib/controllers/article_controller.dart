@@ -1,11 +1,11 @@
 import 'package:pocketbase/pocketbase.dart';
-import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:get/get.dart';
+import 'package:jieyan_app/providers/article_provider.dart';
 
 /// 文章控制器,使用 GetX 管理状态
 class ArticleController extends GetxController {
-  /// PocketBase 服务实例
-  final PocketBaseService pbService = Get.find<PocketBaseService>();
+  /// 文章数据提供者实例
+  final ArticleProvider articleProvider = Get.find<ArticleProvider>();
   /// 文章列表的可观察对象
   final _articles = <RecordModel>[].obs;
   /// 加载状态的可观察对象
@@ -31,8 +31,8 @@ class ArticleController extends GetxController {
   /// 无返回值
   Future<void> fetchArticles() async {
     try {
-      /// 从 PocketBase 获取文章列表
-      final records = await pbService.getArticles(_page.value, 10);
+      /// 从 ArticleProvider 获取文章列表
+      final records = await articleProvider.getArticles(_page.value, 10);
       _articles.addAll(records);
       _isLoading.value = false;
       _hasMore.value = records.isNotEmpty;
@@ -52,7 +52,7 @@ class ArticleController extends GetxController {
     update();
     _page.value = _page.value + 1;
     try {
-      final records = await pbService.getArticles(_page.value, 10);
+      final records = await articleProvider.getArticles(_page.value, 10);
       _articles.addAll(records);
       _isLoading.value = false;
       _hasMore.value = records.isNotEmpty;
@@ -76,7 +76,7 @@ class ArticleController extends GetxController {
     _article.value = null; // 清除之前的文章数据
     update();
     try {
-      final record = await pbService.getArticleById(id);
+      final record = await articleProvider.getArticleById(id);
       _article.value = record;
       _isLoading.value = false;
       update();

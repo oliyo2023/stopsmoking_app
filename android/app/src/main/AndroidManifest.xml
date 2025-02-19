@@ -9,7 +9,7 @@
     <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
 
     <application
-        android:label="jieyan_app"
+        android:label="AI戒烟"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

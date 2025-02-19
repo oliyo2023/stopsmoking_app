@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:jieyan_app/bindings/article_binding.dart';
 import 'package:jieyan_app/controllers/chat_controller.dart';
 import 'package:jieyan_app/controllers/article_controller.dart';
 import 'package:jieyan_app/providers/user_provider.dart';
@@ -34,16 +35,12 @@ class AppRoutes {
     GetPage(
       name: '/article',
       page: () => const ArticlePage(),
-      binding: BindingsBuilder(() {
-        Get.put(ArticleController());
-      }),
+      binding: ArticleBinding(),
     ),
     GetPage(
       name: '/article_detail/:articleId',
       page: () => ArticleDetailPage(articleId: Get.parameters['articleId']!),
-      binding: BindingsBuilder(() {
-        Get.put(ArticleController());
-      }),
+      binding: ArticleBinding(),
     ),
   ];
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jieyan_app/controllers/article_controller.dart';
 import 'package:jieyan_app/pages/article_page.dart';
+import 'package:jieyan_app/providers/article_provider.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/pages/profile_page.dart';
