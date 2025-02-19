@@ -5,12 +5,6 @@ class PlanController extends GetxController {
   // 例如：戒烟目标日期、进度追踪等
 
   @override
-  void onInit() {
-    super.onInit();
-    // 初始化逻辑
-  }
-
-  @override
   void onClose() {
     // 清理资源
     super.onClose();

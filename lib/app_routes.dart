@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:jieyan_app/bindings/article_binding.dart';
 import 'package:jieyan_app/controllers/chat_controller.dart';
-import 'package:jieyan_app/controllers/article_controller.dart';
 import 'package:jieyan_app/providers/user_provider.dart';
 import 'package:jieyan_app/pages/article_page.dart';
 import 'package:jieyan_app/pages/home_page.dart';

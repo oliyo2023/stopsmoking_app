@@ -113,7 +113,7 @@ class UserProvider extends GetxController {
         backgroundColor: Get.theme.colorScheme.error,
         colorText: Get.theme.colorScheme.onError,
       );
-      throw e;
+      rethrow;
     }
   }
 
@@ -136,7 +136,7 @@ class UserProvider extends GetxController {
         backgroundColor: Get.theme.colorScheme.error,
         colorText: Get.theme.colorScheme.onError,
       );
-      throw e;
+      rethrow;
     }
   }
 
@@ -157,7 +157,7 @@ class UserProvider extends GetxController {
         backgroundColor: Get.theme.colorScheme.error,
         colorText: Get.theme.colorScheme.onError,
       );
-      throw e;
+      rethrow;
     }
   }
 
@@ -184,7 +184,7 @@ class UserProvider extends GetxController {
         backgroundColor: Get.theme.colorScheme.error,
         colorText: Get.theme.colorScheme.onError,
       );
-      throw e;
+      rethrow;
     }
   }
 }
