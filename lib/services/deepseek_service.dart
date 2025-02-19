@@ -1,10 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:jieyan_app/config.dart';
 
 class DeepSeekService extends GetxService {
   final String apiKey; // DeepSeek API 密钥
-  final String baseUrl = 'https://8.140.206.248/v1'; // DeepSeek API 基础 URL
 
   DeepSeekService({required this.apiKey});
 
@@ -15,7 +15,7 @@ class DeepSeekService extends GetxService {
 
   Future<String> getChatResponse(String message) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/chat/completions'),
+      Uri.parse('$deepSeekBaseUrl/chat/completions'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $apiKey',

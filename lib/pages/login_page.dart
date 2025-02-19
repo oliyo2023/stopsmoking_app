@@ -63,33 +63,36 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const Text('登录'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
                   labelText: '邮箱',
-                  border: OutlineInputBorder(),
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
-                keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '请输入邮箱';
                   }
+                  if (!GetUtils.isEmail(value)) {
+                    return '请输入有效的邮箱地址';
+                  }
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 16.0),
               TextFormField(
                 controller: _passwordController,
                 decoration: const InputDecoration(
                   labelText: '密码',
-                  border: OutlineInputBorder(),
+                  isDense: true,
+                  contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
                 obscureText: true,
                 validator: (value) {
@@ -99,21 +102,24 @@ class _LoginPageState extends State<LoginPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 24.0),
               SizedBox(
                 width: double.infinity,
-                height: 48,
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _login,
                   child: _isLoading
-                      ? const CircularProgressIndicator()
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
                       : const Text('登录'),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 16.0),
               TextButton(
                 onPressed: () => Get.toNamed('/register'),
-                child: const Text('还没有账号？立即注册'),
+                child: const Text('没有账号？立即注册'),
               ),
             ],
           ),

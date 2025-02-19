@@ -183,7 +183,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _nicknameController, // 昵称输入框
-                    decoration: const InputDecoration(labelText: '昵称'),
+                    decoration: const InputDecoration(
+                      labelText: '昵称',
+                    ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return '请输入昵称'; // 昵称不能为空
