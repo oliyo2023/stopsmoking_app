@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.jieyan_app">
+    package="com.oliyo.stopsmoking">
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />

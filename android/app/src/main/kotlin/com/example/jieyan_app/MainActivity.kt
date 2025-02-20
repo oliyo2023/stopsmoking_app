@@ -1,4 +1,4 @@
-package com.example.jieyan_app
+package com.oliyo.stopsmoking
 
 import io.flutter.embedding.android.FlutterActivity
 
