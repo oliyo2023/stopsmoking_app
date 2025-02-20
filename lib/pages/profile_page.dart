@@ -1,241 +1,246 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jieyan_app/providers/user_provider.dart';
-import 'package:jieyan_app/services/pocketbase_service.dart';
-import 'package:pocketbase/pocketbase.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
+import '../providers/user_provider.dart';
+import '../services/pocketbase_service.dart';
 
-/// 个人信息页面
-class ProfilePage extends StatefulWidget {
-  /// 构造函数
+class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
-
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
-  final _formKey = GlobalKey<FormState>(); // 表单的全局 key
-  final _nicknameController = TextEditingController(); // 昵称控制器
-  // Add more controllers for other fields later
-
-  bool _isLoading = false; // 是否正在加载
-  late final PocketBaseService _pbService; // PocketBase 服务实例
-  late RecordModel _userRecord; // 用户记录
-  File? _avatarImage; // 头像图片文件
-  bool _isLoggedIn = false; // 用户是否已登录
-
-  @override
-  void initState() {
-    super.initState();
-    _pbService = Get.find<PocketBaseService>(); // 获取 PocketBaseService 实例
-    _checkLoginStatus(); // 检查登录状态
-  }
-
-  /// 检查用户登录状态
-  Future<void> _checkLoginStatus() async {
-    if (_pbService.pb.authStore.isValid) {
-      // 如果用户已登录
-      setState(() {
-        _isLoggedIn = true; // 设置 _isLoggedIn 为 true
-      });
-      _fetchUserProfile(); // 获取用户资料
-    } else {
-      setState(() {
-        _isLoggedIn = false; // 设置 _isLoggedIn 为 false
-      });
-    }
-  }
-
-  /// 获取用户资料
-  Future<void> _fetchUserProfile() async {
-    setState(() {
-      _isLoading = true; // 设置加载状态为 true
-    });
-    try {
-      _userRecord = await _pbService.pb
-          .collection('users')
-          .getOne(_pbService.pb.authStore.model!.id); // 获取用户记录
-      _nicknameController.text = _userRecord.data['nickname'] ?? ''; // 初始化昵称控制器
-      // Initialize other controllers similarly
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch user profile: $e',
-          backgroundColor: Colors.red, colorText: Colors.white); // 显示错误提示
-    } finally {
-      setState(() {
-        _isLoading = false; // 设置加载状态为 false
-      });
-    }
-  }
-
-  /// 更新用户资料
-  Future<void> _updateUserProfile() async {
-    setState(() {
-      _isLoading = true; // 设置加载状态为 true
-    });
-
-    try {
-      final updatedData = {
-        'nickname': _nicknameController.text, // 更新昵称
-        // Add other fields here
-      };
-
-      List<http.MultipartFile> files = [];
-
-      // Add avatar upload to the request
-      if (_avatarImage != null) {
-        final bytes = await _avatarImage!.readAsBytes();
-        files.add(
-          http.MultipartFile.fromBytes(
-            'avatar',
-            bytes,
-            filename: _avatarImage!.path.split('/').last,
-          ),
-        );
-      }
-
-      await _pbService.pb.collection('users').update(
-          _pbService.pb.authStore.model!.id,
-          body: updatedData,
-          files: files); // 更新用户记录
-
-      Get.snackbar('Success', 'Profile updated successfully!',
-          backgroundColor: Colors.green, colorText: Colors.white); // 显示成功提示
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to update profile: $e',
-          backgroundColor: Colors.red, colorText: Colors.white); // 显示错误提示
-    } finally {
-      setState(() {
-        _isLoading = false; // 设置加载状态为 false
-      });
-    }
-  }
-
-  /// 选择头像图片
-  Future<void> _pickAvatarImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery); // 从图库选择图片
-    if (pickedFile != null) {
-      setState(() {
-        _avatarImage = File(pickedFile.path); // 更新头像图片文件
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _nicknameController.dispose(); // 释放昵称控制器
-    // Dispose other controllers
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('个人信息'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text('个人中心', style: TextStyle(color: Colors.black, fontSize: 18)),
         actions: [
-          if (_isLoggedIn)
-            IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () async {
-                final userProvider = Get.find<UserProvider>();
-                userProvider.logout();
-                setState(() {
-                  _isLoggedIn = false;
-                });
-                Get.snackbar('提示', '已成功登出',
-                    backgroundColor: Colors.green, colorText: Colors.white);
-              },
-            ),
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.black87),
+            onPressed: () {
+              // TODO: 实现设置页面导航
+            },
+          ),
         ],
       ),
-      body: _isLoggedIn
-          ? _buildProfileForm()
-          : _buildLoginPrompt(), // 根据登录状态显示不同的内容
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildUserInfoSection(),
+            _buildMembershipCard(),
+            _buildServiceSection(),
+            _buildHealthServiceSection(),
+            _buildLiveServiceSection(),
+          ],
+        ),
+      ),
     );
   }
 
-  /// 构建个人信息表单
-  Widget _buildProfileForm() {
-    return _isLoading
-        ? const Center(child: CircularProgressIndicator()) // 显示加载指示器
-        : Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: _pickAvatarImage, // 点击选择头像
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: _avatarImage != null
-                          ? FileImage(_avatarImage!)
-                          : null, // 显示头像图片
-                      child: _avatarImage == null
-                          ? const Icon(Icons.camera_alt, size: 40)
-                          : null, // 如果没有选择头像,显示相机图标
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _nicknameController, // 昵称输入框
-                    decoration: const InputDecoration(
-                      labelText: '昵称',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '请输入昵称'; // 昵称不能为空
-                      }
-                      return null;
-                    },
-                  ),
-                  // Add more form fields for other profile details
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () {
-                            if (_formKey.currentState!.validate()) {
-                              _updateUserProfile(); // 保存按钮,点击更新用户资料
-                            }
-                          },
-                    child: _isLoading
-                        ? const CircularProgressIndicator()
-                        : const Text('保存'), // 根据加载状态显示不同的内容
-                  ),
-                ],
+  Widget _buildUserInfoSection() {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.all(20),
+      child: Row(
+        children: [
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey[200]!, width: 2),
+              image: const DecorationImage(
+                image: AssetImage('assets/images/default_avatar.png'),
+                fit: BoxFit.cover,
               ),
             ),
-          );
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '布朗熊大宝',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.blue[50],
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.star, size: 16, color: Colors.blue[600]),
+                          const SizedBox(width: 4),
+                          Text('彩虹分: 99', 
+                            style: TextStyle(color: Colors.blue[600], fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    TextButton(
+                      onPressed: () {
+                        // TODO: 实现编辑资料功能
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text('编辑资料',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 13)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  /// 构建登录提示
-  Widget _buildLoginPrompt() {
-    return Center(
+  Widget _buildMembershipCard() {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF1E88E5), Color(0xFF1565C0)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue[300]!.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('请先登录以查看个人信息'), // 提示用户登录
+          const Text(
+            '现在加入 Blued 会员',
+            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '限时！VIP 最低 9 折～',
+            style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14),
+          ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              Get.toNamed('/login'); // 跳转到登录页面
+              // TODO: 实现加入会员功能
             },
-            child: const Text('登录'),
-          ),
-          const SizedBox(height: 10),
-          TextButton(
-            onPressed: () {
-              Get.toNamed('/register'); // 跳转到注册页面
-            },
-            child: const Text('注册'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: const Color(0xFF1565C0),
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            child: const Text('加入会员', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildServiceSection() {
+    return _buildServiceGroup(
+      title: '我的服务',
+      items: [
+        ServiceItem(Icons.monetization_on_outlined, '鸣豆 7986', Colors.orange),
+        ServiceItem(Icons.call_outlined, '呼唤', Colors.green),
+        ServiceItem(Icons.camera_alt_outlined, '彩子特权包', Colors.purple),
+        ServiceItem(Icons.star_border_outlined, '超级曝光', Colors.blue),
+      ],
+    );
+  }
+
+  Widget _buildHealthServiceSection() {
+    return _buildServiceGroup(
+      title: '健康服务',
+      items: [
+        ServiceItem(Icons.local_hospital_outlined, '健康药房', Colors.red),
+        ServiceItem(Icons.favorite_border, '性感好物', Colors.pink),
+        ServiceItem(Icons.volunteer_activism_outlined, '淡蓝公益', Colors.blue),
+        ServiceItem(Icons.medical_services_outlined, 'HIV预约', Colors.teal),
+      ],
+    );
+  }
+
+  Widget _buildLiveServiceSection() {
+    return _buildServiceGroup(
+      title: '直播服务',
+      items: [
+        ServiceItem(Icons.star_border_outlined, '主播等级', Colors.amber),
+        ServiceItem(Icons.people_outline, '主播报表', Colors.indigo),
+        ServiceItem(Icons.group_outlined, '粉丝团', Colors.deepPurple),
+        ServiceItem(Icons.account_balance_wallet_outlined, '财富等级', Colors.green),
+      ],
+    );
+  }
+
+  Widget _buildServiceGroup({required String title, required List<ServiceItem> items}) {
+    return Container(
+      color: Colors.white,
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            child: Text(title, 
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          ),
+          GridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: 4,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            mainAxisSpacing: 16,
+            children: items.map((item) => _buildServiceItem(item)).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServiceItem(ServiceItem item) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(item.icon, size: 28, color: item.color),
+        const SizedBox(height: 8),
+        Text(
+          item.label,
+          style: const TextStyle(fontSize: 12, color: Colors.black87),
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+}
+
+class ServiceItem {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  ServiceItem(this.icon, this.label, this.color);
 }

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:jieyan_app/bindings/article_binding.dart';
 import 'package:jieyan_app/controllers/chat_controller.dart';
+import 'package:jieyan_app/controllers/plan_controller.dart';
 import 'package:jieyan_app/providers/user_provider.dart';
 import 'package:jieyan_app/pages/article_page.dart';
 import 'package:jieyan_app/pages/home_page.dart';
@@ -23,7 +24,13 @@ class AppRoutes {
     ),
     GetPage(name: '/register', page: () => const RegisterPage()),
     GetPage(name: '/profile', page: () => const ProfilePage()),
-    GetPage(name: '/plan', page: () => const PlanPage()),
+    GetPage(
+      name: '/plan',
+      page: () => PlanPage(),
+      binding: BindingsBuilder(() {
+        Get.put(PlanController());
+      }),
+    ),
     GetPage(
       name: '/chat',
       page: () => const ChatPage(),

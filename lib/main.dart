@@ -6,7 +6,7 @@ import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:jieyan_app/app_routes.dart';
 import 'package:jieyan_app/services/deepseek_service.dart';
 import 'package:jieyan_app/providers/user_provider.dart';
-// import 'package:jieyan_app/providers/article_provider.dart';
+import 'package:jieyan_app/providers/plan_provider.dart'; // 导入 PlanProvider
 
 /// 初始化所有服务
 Future<void> initServices() async {
@@ -16,6 +16,8 @@ Future<void> initServices() async {
   Get.put(UserProvider());
   // 初始化 ArticleProvider
   Get.put(ArticleProvider());
+  // 初始化 PlanProvider
+  Get.put(PlanProvider()); // 注册 PlanProvider
   // 异步初始化 DeepSeekService
   await Get.putAsync(() => DeepSeekService(
           apiKey:
