@@ -8,11 +8,15 @@ class PlanController extends GetxController {
   final currentStage = Rxn<PlanStage>();
   final planProgress = Rxn<PlanProgress>();
   final dailyTasks = RxList<String>();
+  final dailyCheckIns = RxMap<DateTime, bool>(); // 记录每日打卡情况
+  final symptomRecords = RxList<SymptomRecord>(); // 记录症状和应对策略
 
   @override
   void onInit() {
     super.onInit();
     fetchPlanStages();
+    fetchPlanProgress();
+    fetchSymptomRecords();
   }
 
   Future<void> fetchPlanStages() async {
@@ -21,6 +25,16 @@ class PlanController extends GetxController {
       currentStage.value = stages.first; // 默认设置第一个阶段
       dailyTasks.value = currentStage.value?.tasks ?? [];
     }
+  }
+
+  Future<void> fetchPlanProgress() async {
+    final progress = await planProvider.getPlanProgress();
+    planProgress.value = progress;
+  }
+
+  Future<void> fetchSymptomRecords() async {
+    final records = await planProvider.getSymptomRecords();
+    symptomRecords.value = records;
   }
 
   void startPlan(DateTime startDate) {
@@ -33,7 +47,9 @@ class PlanController extends GetxController {
 
   void dailyCheckIn() {
     if (planProgress.value != null) {
+      dailyCheckIns[DateTime.now()] = true;
       planProgress.value!.dailyCheckIn[DateTime.now()] = true;
+      planProvider.saveDailyCheckIn(DateTime.now());
       planProgress.refresh(); // 触发 UI 更新
     }
   }
@@ -44,6 +60,7 @@ class PlanController extends GetxController {
       symptom: symptom,
       copingStrategy: copingStrategy,
     );
+    symptomRecords.add(record);
     planProvider.saveSymptomRecord(record);
     planProgress.value?.symptomRecords.add(record);
     planProgress.refresh(); // 触发 UI 更新

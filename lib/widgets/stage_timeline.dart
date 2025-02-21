@@ -61,7 +61,7 @@ class StageTimeline extends StatelessWidget {
   }
 
   Widget _buildStageItem(PlanStage stage, bool isCurrent, bool isCompleted) {
-    return Container(
+    return SizedBox(
       width: 120,
       child: Column(
         mainAxisSize: MainAxisSize.min,

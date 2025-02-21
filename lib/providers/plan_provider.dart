@@ -43,4 +43,28 @@ class PlanProvider extends GetxService {
     // TODO: 将症状记录保存到 PocketBase
     print('保存症状记录: ${record.symptom}'); // 示例，需要替换为 PocketBase 存储
   }
+
+  Future<PlanProgress?> getPlanProgress() async {
+    // 模拟从数据库或网络获取计划进度
+    // 这里可以替换为实际的数据获取逻辑
+    return null; // 或者返回一个默认值或从数据源获取的值
+  }
+
+  Future<List<SymptomRecord>> getSymptomRecords() async {
+    // 模拟从数据库或网络获取症状记录
+    // 实际应用中应替换为真实的逻辑
+    return [
+      SymptomRecord(
+        dateTime: DateTime.now(),
+        symptom: '头痛',
+        copingStrategy: '休息片刻',
+      ),
+      // 添加更多模拟数据...
+    ];
+  }
+
+  Future<void> saveDailyCheckIn(DateTime date) async {
+    // 实现保存每日打卡记录的逻辑
+    // 例如：将打卡记录保存到数据库或本地存储
+  }
 }

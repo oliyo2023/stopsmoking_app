@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import '../providers/user_provider.dart';
-import '../services/pocketbase_service.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -13,7 +10,8 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text('个人中心', style: TextStyle(color: Colors.black, fontSize: 18)),
+        title: const Text('个人中心',
+            style: TextStyle(color: Colors.black, fontSize: 18)),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.black87),
@@ -68,7 +66,8 @@ class ProfilePage extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.blue[50],
                         borderRadius: BorderRadius.circular(15),
@@ -77,8 +76,9 @@ class ProfilePage extends StatelessWidget {
                         children: [
                           Icon(Icons.star, size: 16, color: Colors.blue[600]),
                           const SizedBox(width: 4),
-                          Text('彩虹分: 99', 
-                            style: TextStyle(color: Colors.blue[600], fontSize: 13)),
+                          Text('彩虹分: 99',
+                              style: TextStyle(
+                                  color: Colors.blue[600], fontSize: 13)),
                         ],
                       ),
                     ),
@@ -93,7 +93,8 @@ class ProfilePage extends StatelessWidget {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: Text('编辑资料',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 13)),
+                          style:
+                              TextStyle(color: Colors.grey[600], fontSize: 13)),
                     ),
                   ],
                 ),
@@ -110,7 +111,7 @@ class ProfilePage extends StatelessWidget {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [Color(0xFF1E88E5), Color(0xFF1565C0)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -118,6 +119,7 @@ class ProfilePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
+            // ignore: deprecated_member_use
             color: Colors.blue[300]!.withOpacity(0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
@@ -129,12 +131,15 @@ class ProfilePage extends StatelessWidget {
         children: [
           const Text(
             '现在加入 Blued 会员',
-            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+            style: TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Text(
             '限时！VIP 最低 9 折～',
-            style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14),
+            // ignore: deprecated_member_use
+            style:
+                TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 20),
           ElevatedButton(
@@ -150,7 +155,8 @@ class ProfilePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            child: const Text('加入会员', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+            child: const Text('加入会员',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
           ),
         ],
       ),
@@ -188,12 +194,14 @@ class ProfilePage extends StatelessWidget {
         ServiceItem(Icons.star_border_outlined, '主播等级', Colors.amber),
         ServiceItem(Icons.people_outline, '主播报表', Colors.indigo),
         ServiceItem(Icons.group_outlined, '粉丝团', Colors.deepPurple),
-        ServiceItem(Icons.account_balance_wallet_outlined, '财富等级', Colors.green),
+        ServiceItem(
+            Icons.account_balance_wallet_outlined, '财富等级', Colors.green),
       ],
     );
   }
 
-  Widget _buildServiceGroup({required String title, required List<ServiceItem> items}) {
+  Widget _buildServiceGroup(
+      {required String title, required List<ServiceItem> items}) {
     return Container(
       color: Colors.white,
       margin: const EdgeInsets.only(top: 12),
@@ -203,8 +211,9 @@ class ProfilePage extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Text(title, 
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            child: Text(title,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ),
           GridView.count(
             shrinkWrap: true,

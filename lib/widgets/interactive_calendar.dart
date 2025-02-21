@@ -46,6 +46,7 @@ class InteractiveCalendar extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 todayDecoration: BoxDecoration(
+                  // ignore: deprecated_member_use
                   color: Theme.of(context).primaryColor.withOpacity(0.5),
                   shape: BoxShape.circle,
                 ),
