@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:jieyan_app/theme/app_theme.dart';
 
+/// 个人中心页面
+/// 展示用户个人信息、会员卡片和各类服务入口
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text('个人中心',
-            style: TextStyle(color: Colors.black, fontSize: 18)),
+            style: TextStyle(color: AppColors.textPrimary, fontSize: 18)),
         actions: [
+          // 设置按钮
           IconButton(
-            icon: const Icon(Icons.settings, color: Colors.black87),
+            icon: const Icon(Icons.settings, color: AppColors.textSecondary),
             onPressed: () {
               // TODO: 实现设置页面导航
             },
@@ -24,23 +28,26 @@ class ProfilePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildUserInfoSection(),
-            _buildMembershipCard(),
-            _buildServiceSection(),
-            _buildHealthServiceSection(),
-            _buildLiveServiceSection(),
+            _buildUserInfoSection(), // 用户信息区域
+            _buildMembershipCard(), // 会员卡片区域
+            _buildServiceSection(), // 我的服务区域
+            _buildHealthServiceSection(), // 健康服务区域
+            _buildLiveServiceSection(), // 直播服务区域
           ],
         ),
       ),
     );
   }
 
+  /// 构建用户信息区域
+  /// 包含用户头像、昵称、彩虹分和编辑资料按钮
   Widget _buildUserInfoSection() {
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
+          // 用户头像
           Container(
             width: 64,
             height: 64,
@@ -58,6 +65,7 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // 用户昵称
                 const Text(
                   '布朗熊大宝',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
@@ -65,6 +73,7 @@ class ProfilePage extends StatelessWidget {
                 const SizedBox(height: 8),
                 Row(
                   children: [
+                    // 彩虹分显示
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 4),
@@ -83,6 +92,7 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
+                    // 编辑资料按钮
                     TextButton(
                       onPressed: () {
                         // TODO: 实现编辑资料功能
@@ -106,21 +116,25 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
+  /// 构建会员卡片区域
+  /// 展示会员优惠信息和加入会员按钮
   Widget _buildMembershipCard() {
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF1E88E5), Color(0xFF1565C0)],
+          colors: [
+            AppColors.membershipGradientStart,
+            AppColors.membershipGradientEnd
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            // ignore: deprecated_member_use
-            color: Colors.blue[300]!.withOpacity(0.3),
+            color: Colors.blue[300]!.withValues(red: 0, green: 0, blue: 0, alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -129,20 +143,21 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // 会员标题
           const Text(
             '现在加入 Blued 会员',
             style: TextStyle(
                 color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
+          // 优惠信息
           Text(
             '限时！VIP 最低 9 折～',
-            // ignore: deprecated_member_use
             style:
-                // ignore: deprecated_member_use
-                TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14),
+                TextStyle(color: Colors.white.withValues(red: 255, green: 255, blue: 255, alpha: 0.8), fontSize: 14),
           ),
           const SizedBox(height: 20),
+          // 加入会员按钮
           ElevatedButton(
             onPressed: () {
               // TODO: 实现加入会员功能
@@ -164,43 +179,57 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
+  /// 构建我的服务区域
+  /// 展示鸣豆、呼唤等功能入口
   Widget _buildServiceSection() {
     return _buildServiceGroup(
       title: '我的服务',
       items: [
-        ServiceItem(Icons.monetization_on_outlined, '鸣豆 7986', Colors.orange),
-        ServiceItem(Icons.call_outlined, '呼唤', Colors.green),
-        ServiceItem(Icons.camera_alt_outlined, '彩子特权包', Colors.purple),
-        ServiceItem(Icons.star_border_outlined, '超级曝光', Colors.blue),
+        ServiceItem(
+            Icons.monetization_on_outlined, '鸣豆 7986', AppColors.serviceOrange),
+        ServiceItem(Icons.call_outlined, '呼唤', AppColors.serviceGreen),
+        ServiceItem(
+            Icons.camera_alt_outlined, '彩子特权包', AppColors.servicePurple),
+        ServiceItem(Icons.star_border_outlined, '超级曝光', AppColors.serviceBlue),
       ],
     );
   }
 
+  /// 构建健康服务区域
+  /// 展示健康药房、性感好物等功能入口
   Widget _buildHealthServiceSection() {
     return _buildServiceGroup(
       title: '健康服务',
       items: [
-        ServiceItem(Icons.local_hospital_outlined, '健康药房', Colors.red),
-        ServiceItem(Icons.favorite_border, '性感好物', Colors.pink),
-        ServiceItem(Icons.volunteer_activism_outlined, '淡蓝公益', Colors.blue),
-        ServiceItem(Icons.medical_services_outlined, 'HIV预约', Colors.teal),
+        ServiceItem(
+            Icons.local_hospital_outlined, '健康药房', AppColors.serviceRed),
+        ServiceItem(Icons.favorite_border, '性感好物', AppColors.servicePink),
+        ServiceItem(
+            Icons.volunteer_activism_outlined, '淡蓝公益', AppColors.serviceBlue),
+        ServiceItem(
+            Icons.medical_services_outlined, 'HIV预约', AppColors.serviceTeal),
       ],
     );
   }
 
+  /// 构建直播服务区域
+  /// 展示主播等级、主播报表等功能入口
   Widget _buildLiveServiceSection() {
     return _buildServiceGroup(
       title: '直播服务',
       items: [
-        ServiceItem(Icons.star_border_outlined, '主播等级', Colors.amber),
-        ServiceItem(Icons.people_outline, '主播报表', Colors.indigo),
-        ServiceItem(Icons.group_outlined, '粉丝团', Colors.deepPurple),
-        ServiceItem(
-            Icons.account_balance_wallet_outlined, '财富等级', Colors.green),
+        ServiceItem(Icons.star_border_outlined, '主播等级', AppColors.serviceAmber),
+        ServiceItem(Icons.people_outline, '主播报表', AppColors.serviceIndigo),
+        ServiceItem(Icons.group_outlined, '粉丝团', AppColors.serviceDeepPurple),
+        ServiceItem(Icons.account_balance_wallet_outlined, '财富等级',
+            AppColors.serviceGreen),
       ],
     );
   }
 
+  /// 构建服务组件
+  /// @param title 服务组标题
+  /// @param items 服务项列表
   Widget _buildServiceGroup(
       {required String title, required List<ServiceItem> items}) {
     return Container(
@@ -210,12 +239,14 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // 服务组标题
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Text(title,
                 style:
                     const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ),
+          // 服务项网格
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -229,6 +260,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
+  /// 构建单个服务项
+  /// @param item 服务项数据
   Widget _buildServiceItem(ServiceItem item) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -247,6 +280,10 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
+/// 服务项数据模型
+/// @param icon 图标
+/// @param label 标签文本
+/// @param color 图标颜色
 class ServiceItem {
   final IconData icon;
   final String label;

@@ -72,7 +72,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: const InputDecoration(
                   labelText: '昵称',
                   isDense: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -87,7 +88,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: const InputDecoration(
                   labelText: '邮箱',
                   isDense: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -105,7 +107,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 decoration: const InputDecoration(
                   labelText: '密码',
                   isDense: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
                 obscureText: true,
                 validator: (value) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jieyan_app/pages/article_page.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
+import 'package:jieyan_app/theme/app_theme.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/pages/profile_page.dart';
 import 'package:jieyan_app/pages/progress_page.dart';
@@ -140,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
-                          color: Colors.blue.shade50, // 浅蓝色背景
+                          color: AppColors.buttonPrimary.withValues(red: 0, green: 0, blue: 0, alpha: 0.1),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: Column(
@@ -163,7 +164,8 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(height: 4),
                             const Text('累计节省 300 元，减少吸烟 600 支',
                                 style: TextStyle(
-                                    fontSize: 12, color: Colors.grey)),
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary)),
                           ],
                         ),
                       ),
@@ -301,9 +303,9 @@ class _HomePageState extends State<HomePage> {
                                                       fontWeight:
                                                           FontWeight.bold)),
                                               Text('${data.value} ${data.unit}',
-                                                  style: TextStyle(
-                                                      color: Colors
-                                                          .grey.shade700)),
+                                                  style: const TextStyle(
+                                                      color: AppColors
+                                                          .textSecondary)),
                                             ],
                                           ),
                                         ))
@@ -364,7 +366,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         currentIndex: _selectedIndex, // 当前选中的索引
-        selectedItemColor: Colors.amber[800], // 选中项的颜色
+        selectedItemColor: AppColors.navSelected, // 选中项的颜色
         onTap: _onItemTapped, // 点击事件处理
       ),
     );

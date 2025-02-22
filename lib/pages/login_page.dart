@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/providers/user_provider.dart';
+import 'package:jieyan_app/theme/app_theme.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -44,8 +45,8 @@ class _LoginPageState extends State<LoginPage> {
         Get.snackbar(
           '登录失败',
           e.toString(),
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+          backgroundColor: AppColors.snackbarError,
+          colorText: AppColors.snackbarText,
         );
       } finally {
         if (mounted) {
