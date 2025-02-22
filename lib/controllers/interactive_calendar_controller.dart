@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:jieyan_app/models/checkin_model.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class InteractiveCalendarController extends GetxController {
   DateTime focusedDay = DateTime.now();
@@ -13,7 +12,7 @@ class InteractiveCalendarController extends GetxController {
   void onInit() {
     super.onInit();
     // 延迟 500 毫秒调用 fetchCheckinData 方法
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       fetchCheckinData();
     });
   }

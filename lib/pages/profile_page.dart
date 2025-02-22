@@ -139,6 +139,7 @@ class ProfilePage extends StatelessWidget {
             '限时！VIP 最低 9 折～',
             // ignore: deprecated_member_use
             style:
+                // ignore: deprecated_member_use
                 TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14),
           ),
           const SizedBox(height: 20),

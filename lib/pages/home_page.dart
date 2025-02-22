@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   final _calendarController = Get.put(
       InteractiveCalendarController()); // 初始化 InteractiveCalendarController
   List<RecordModel> _recommendedArticles = []; // 推荐文章列表
-  List<HealthDataModel> _healthData = [
+  final List<HealthDataModel> _healthData = [
     // Mock 健康数据
     HealthDataModel(name: '心率', value: 72.0, unit: 'bpm', trend: 'stable'),
     HealthDataModel(name: '血压', value: 120.0, unit: 'mmHg', trend: 'down'),
@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('首页'),
+        title: const Text('首页'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: Stack(
@@ -150,23 +150,24 @@ class _HomePageState extends State<HomePage> {
                               backgroundImage: _userInfo?.data['avatar'] != null
                                   ? NetworkImage(_userInfo!.data['avatar'])
                                       as ImageProvider<Object>
-                                  : AssetImage(
+                                  : const AssetImage(
                                       'assets/images/default_avatar.png'), // 默认头像
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(_userInfo?.data['username'] ?? '用户昵称',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 24, fontWeight: FontWeight.bold)),
-                            SizedBox(height: 4),
-                            Text('已戒烟 30 天', style: TextStyle(fontSize: 16)),
-                            SizedBox(height: 4),
-                            Text('累计节省 300 元，减少吸烟 600 支',
+                            const SizedBox(height: 4),
+                            const Text('已戒烟 30 天',
+                                style: TextStyle(fontSize: 16)),
+                            const SizedBox(height: 4),
+                            const Text('累计节省 300 元，减少吸烟 600 支',
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.grey)),
                           ],
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
 
                       // 每日打卡
                       Card(
@@ -175,24 +176,24 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('每日打卡',
+                              const Text('每日打卡',
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold)),
-                              SizedBox(height: 10),
-                              InteractiveCalendar(),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
+                              const InteractiveCalendar(),
+                              const SizedBox(height: 10),
                               Center(
                                 child: ElevatedButton(
                                   onPressed: _submitCheckin, // 绑定打卡事件
-                                  child: Text('每日打卡'),
+                                  child: const Text('每日打卡'),
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
 
                       // 戒烟计划
                       Card(
@@ -201,26 +202,26 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('戒烟计划',
+                              const Text('戒烟计划',
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold)),
-                              SizedBox(height: 10),
-                              StageTimeline(),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
+                              const StageTimeline(),
+                              const SizedBox(height: 10),
                               Center(
                                 child: TextButton(
                                   onPressed: () {
                                     Get.toNamed('/plan'); // 跳转到戒烟计划页面
                                   },
-                                  child: Text('查看完整计划'),
+                                  child: const Text('查看完整计划'),
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
 
                       // 学习推荐
                       Card(
@@ -229,11 +230,11 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('今日推荐',
+                              const Text('今日推荐',
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold)),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               // 推荐文章列表
                               Column(
                                 children: _recommendedArticles
@@ -245,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(article.data['title'] ?? '',
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold)),
                                               Text(
@@ -258,20 +259,20 @@ class _HomePageState extends State<HomePage> {
                                         ))
                                     .toList(),
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Center(
                                 child: TextButton(
                                   onPressed: () {
                                     Get.toNamed('/article'); // 跳转到学习中心页面
                                   },
-                                  child: Text('查看更多'),
+                                  child: const Text('查看更多'),
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
 
                       // 健康数据
                       Card(
@@ -280,11 +281,11 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('健康数据',
+                              const Text('健康数据',
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold)),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               // 健康数据列表
                               Column(
                                 children: _healthData
@@ -296,7 +297,7 @@ class _HomePageState extends State<HomePage> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(data.name,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold)),
                                               Text('${data.value} ${data.unit}',
@@ -308,20 +309,20 @@ class _HomePageState extends State<HomePage> {
                                         ))
                                     .toList(),
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Center(
                                 child: TextButton(
                                   onPressed: () {
                                     Get.toNamed('/progress'); // 跳转到进度页面
                                   },
-                                  child: Text('查看更多'),
+                                  child: const Text('查看更多'),
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),

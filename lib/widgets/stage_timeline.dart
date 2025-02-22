@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jieyan_app/models/plan_models.dart';
 
 class StageTimeline extends StatefulWidget {
+  // ignore: use_super_parameters
   const StageTimeline({Key? key}) : super(key: key);
 
   @override
@@ -9,7 +10,7 @@ class StageTimeline extends StatefulWidget {
 }
 
 class _StageTimelineState extends State<StageTimeline> {
-  List<PlanStage> _planStages = [
+  final List<PlanStage> _planStages = [
     PlanStage(
       name: '准备阶段',
       durationDays: 7,
@@ -27,13 +28,13 @@ class _StageTimelineState extends State<StageTimeline> {
     ),
   ];
 
-  int _currentStageIndex = 1; // 假设当前处于行动阶段
+  final int _currentStageIndex = 1; // 假设当前处于行动阶段
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: _planStages.length,
       itemBuilder: (context, index) {
         final stage = _planStages[index];
@@ -53,7 +54,7 @@ class _StageTimelineState extends State<StageTimeline> {
                         ? Theme.of(context).colorScheme.secondary
                         : Theme.of(context).primaryColor, // 当前阶段使用强调色
                   ),
-                  child: Center(
+                  child: const Center(
                     child: Icon(Icons.circle, color: Colors.white, size: 12),
                   ),
                 ),
@@ -62,11 +63,11 @@ class _StageTimelineState extends State<StageTimeline> {
                     width: 2,
                     height: 50,
                     color: Colors.grey.shade300,
-                    margin: EdgeInsets.only(top: 4, bottom: 4),
+                    margin: const EdgeInsets.only(top: 4, bottom: 4),
                   ),
               ],
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             // 阶段信息
             Expanded(
               child: Column(
@@ -81,10 +82,10 @@ class _StageTimelineState extends State<StageTimeline> {
                             ? Theme.of(context).colorScheme.secondary
                             : Colors.black), // 当前阶段使用强调色
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text('持续 ${stage.durationDays} 天',
-                      style: TextStyle(color: Colors.grey)),
-                  SizedBox(height: 8),
+                      style: const TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 8),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: stage.tasks
@@ -93,9 +94,9 @@ class _StageTimelineState extends State<StageTimeline> {
                                   const EdgeInsets.symmetric(vertical: 2.0),
                               child: Row(
                                 children: [
-                                  Icon(Icons.task_alt,
+                                  const Icon(Icons.task_alt,
                                       size: 16, color: Colors.grey),
-                                  SizedBox(width: 4),
+                                  const SizedBox(width: 4),
                                   Text(task,
                                       style: TextStyle(
                                           color: Colors.grey.shade700)),

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:jieyan_app/controllers/interactive_calendar_controller.dart';
 
 class InteractiveCalendar extends StatelessWidget {
+  // ignore: use_super_parameters
   const InteractiveCalendar({Key? key}) : super(key: key);
 
   @override
@@ -34,7 +35,7 @@ class InteractiveCalendar extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
               ),
-              headerStyle: HeaderStyle(
+              headerStyle: const HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
               ),
@@ -42,7 +43,7 @@ class InteractiveCalendar extends StatelessWidget {
                 markerBuilder: (context, day, events) {
                   if (controller.checkinRecords.any((record) =>
                       isSameDay(DateTime.parse(record.date), day))) {
-                    return Positioned(
+                    return const Positioned(
                       bottom: 1,
                       child: Icon(
                         Icons.done,

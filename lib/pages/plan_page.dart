@@ -5,6 +5,7 @@ import 'package:jieyan_app/widgets/interactive_calendar.dart';
 import 'package:jieyan_app/widgets/stage_timeline.dart';
 import 'package:jieyan_app/widgets/symptom_record_form.dart';
 
+// ignore: use_key_in_widget_constructors
 class PlanPage extends StatelessWidget {
   final PlanController controller = Get.put(PlanController());
 
