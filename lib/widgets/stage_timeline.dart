@@ -1,109 +1,115 @@
 import 'package:flutter/material.dart';
-import '../models/plan_models.dart';
+import 'package:jieyan_app/models/plan_models.dart';
 
-class StageTimeline extends StatelessWidget {
-  final List<PlanStage> stages;
-  final PlanStage currentStage;
+class StageTimeline extends StatefulWidget {
+  const StageTimeline({Key? key}) : super(key: key);
 
-  const StageTimeline({
-    super.key,
-    required this.stages,
-    required this.currentStage,
-  });
+  @override
+  State<StageTimeline> createState() => _StageTimelineState();
+}
+
+class _StageTimelineState extends State<StageTimeline> {
+  List<PlanStage> _planStages = [
+    PlanStage(
+      name: '准备阶段',
+      durationDays: 7,
+      tasks: ['了解戒烟的好处', '设定戒烟目标', '制定戒烟计划'],
+    ),
+    PlanStage(
+      name: '行动阶段',
+      durationDays: 30,
+      tasks: ['开始戒烟', '应对戒断反应', '寻求支持'],
+    ),
+    PlanStage(
+      name: '巩固阶段',
+      durationDays: 90,
+      tasks: ['巩固戒烟成果', '预防复吸', '享受健康生活'],
+    ),
+  ];
+
+  int _currentStageIndex = 1; // 假设当前处于行动阶段
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: _planStages.length,
+      itemBuilder: (context, index) {
+        final stage = _planStages[index];
+        final isCurrentStage = index == _currentStageIndex;
+        return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              '戒烟阶段 (Quit Smoking Stages)',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            // 圆点和连接线
+            Column(
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isCurrentStage
+                        ? Theme.of(context).colorScheme.secondary
+                        : Theme.of(context).primaryColor, // 当前阶段使用强调色
+                  ),
+                  child: Center(
+                    child: Icon(Icons.circle, color: Colors.white, size: 12),
+                  ),
+                ),
+                if (index < _planStages.length - 1)
+                  Container(
+                    width: 2,
+                    height: 50,
+                    color: Colors.grey.shade300,
+                    margin: EdgeInsets.only(top: 4, bottom: 4),
+                  ),
+              ],
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 100,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: stages.length,
-                itemBuilder: (context, index) {
-                  final stage = stages[index];
-                  final isCurrentStage = stage == currentStage;
-                  final isCompleted = stages.indexOf(currentStage) > index;
-
-                  return Row(
-                    children: [
-                      _buildStageItem(stage, isCurrentStage, isCompleted),
-                      if (index < stages.length - 1)
-                        Container(
-                          width: 30,
-                          height: 2,
-                          color: isCompleted
-                              ? Theme.of(context).primaryColor
-                              : Colors.grey[300],
-                        ),
-                    ],
-                  );
-                },
+            SizedBox(width: 16),
+            // 阶段信息
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    stage.name,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: isCurrentStage
+                            ? Theme.of(context).colorScheme.secondary
+                            : Colors.black), // 当前阶段使用强调色
+                  ),
+                  SizedBox(height: 4),
+                  Text('持续 ${stage.durationDays} 天',
+                      style: TextStyle(color: Colors.grey)),
+                  SizedBox(height: 8),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: stage.tasks
+                        .map((task) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 2.0),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.task_alt,
+                                      size: 16, color: Colors.grey),
+                                  SizedBox(width: 4),
+                                  Text(task,
+                                      style: TextStyle(
+                                          color: Colors.grey.shade700)),
+                                ],
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                ],
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStageItem(PlanStage stage, bool isCurrent, bool isCompleted) {
-    return SizedBox(
-      width: 120,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isCurrent
-                  ? Colors.blue
-                  : isCompleted
-                      ? Colors.green
-                      : Colors.grey[300],
-            ),
-            child: Center(
-              child: Icon(
-                isCompleted ? Icons.check : Icons.circle,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            stage.name,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
-              color: isCurrent ? Colors.blue : Colors.black87,
-            ),
-          ),
-          Text(
-            '${stage.durationDays} 天',
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

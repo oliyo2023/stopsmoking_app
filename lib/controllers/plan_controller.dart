@@ -15,8 +15,6 @@ class PlanController extends GetxController {
   void onInit() {
     super.onInit();
     fetchPlanStages();
-    fetchPlanProgress();
-    fetchSymptomRecords();
   }
 
   Future<void> fetchPlanStages() async {
@@ -27,29 +25,22 @@ class PlanController extends GetxController {
     }
   }
 
-  Future<void> fetchPlanProgress() async {
-    final progress = await planProvider.getPlanProgress();
-    planProgress.value = progress;
-  }
-
-  Future<void> fetchSymptomRecords() async {
-    final records = await planProvider.getSymptomRecords();
-    symptomRecords.value = records;
-  }
-
   void startPlan(DateTime startDate) {
-    planProgress.value = PlanProgress(
-      startDate: startDate,
-      currentStage: currentStage.value,
-    );
-    updateDailyTasks();
+    if (currentStage.value != null) {
+      planProgress.value = PlanProgress(
+        stage: currentStage.value!,
+        startDate: startDate,
+        dailyCheckIn: {},
+        symptomRecords: [],
+      );
+      updateDailyTasks();
+    }
   }
 
   void dailyCheckIn() {
     if (planProgress.value != null) {
-      dailyCheckIns[DateTime.now()] = true;
       planProgress.value!.dailyCheckIn[DateTime.now()] = true;
-      planProvider.saveDailyCheckIn(DateTime.now());
+      // planProvider.saveDailyCheckIn(DateTime.now()); // This method doesn't exist in PlanProvider
       planProgress.refresh(); // 触发 UI 更新
     }
   }

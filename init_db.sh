@@ -34,3 +34,6 @@ CREATE TABLE articles (
 "
 
 echo "数据库初始化完成。"
+
+# 运行 Flutter Web 应用，强制使用 HTML 渲染器
+flutter run -d chrome --web-renderer html

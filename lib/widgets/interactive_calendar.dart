@@ -1,70 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:get/get.dart';
+import 'package:jieyan_app/controllers/interactive_calendar_controller.dart';
 
 class InteractiveCalendar extends StatelessWidget {
-  final DateTime startDate;
-  final Map<DateTime, bool> dailyCheckIn;
-  final Function(DateTime) onDaySelected;
-
-  const InteractiveCalendar({
-    super.key,
-    required this.startDate,
-    required this.dailyCheckIn,
-    required this.onDaySelected,
-  });
+  const InteractiveCalendar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return GetBuilder<InteractiveCalendarController>(
+      init: InteractiveCalendarController(),
+      builder: (controller) {
+        return Column(
           children: [
-            const Text(
-              '打卡日历 (Check-in Calendar)',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
             TableCalendar(
-              firstDay: startDate,
-              lastDay: DateTime.now().add(const Duration(days: 365)),
-              focusedDay: DateTime.now(),
+              focusedDay: controller.focusedDay,
+              firstDay: DateTime.utc(2010, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              selectedDayPredicate: (day) {
+                return isSameDay(controller.selectedDay, day);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                controller.selectedDay = selectedDay;
+                controller.focusedDay =
+                    focusedDay; // update `focusedDay` here as well
+                controller.update();
+              },
               calendarFormat: CalendarFormat.month,
               startingDayOfWeek: StartingDayOfWeek.monday,
-              headerStyle: const HeaderStyle(
-                formatButtonVisible: false,
-                titleCentered: true,
-              ),
               calendarStyle: CalendarStyle(
-                markerDecoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  shape: BoxShape.circle,
-                ),
-                todayDecoration: BoxDecoration(
-                  // ignore: deprecated_member_use
-                  color: Theme.of(context).primaryColor.withOpacity(0.5),
-                  shape: BoxShape.circle,
-                ),
                 selectedDecoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
                   shape: BoxShape.circle,
                 ),
               ),
-              eventLoader: (day) {
-                return dailyCheckIn[day] == true ? [true] : [];
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                onDaySelected(selectedDay);
+              headerStyle: HeaderStyle(
+                formatButtonVisible: false,
+                titleCentered: true,
+              ),
+              calendarBuilders: CalendarBuilders(
+                markerBuilder: (context, day, events) {
+                  if (controller.checkinRecords.any((record) =>
+                      isSameDay(DateTime.parse(record.date), day))) {
+                    return Positioned(
+                      bottom: 1,
+                      child: Icon(
+                        Icons.done,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    );
+                  }
+                  return null;
+                },
+              ),
+              onPageChanged: (focusedDay) {
+                controller.focusedDay = focusedDay;
+                controller.selectedDay = focusedDay;
+                controller.fetchCheckinData();
               },
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

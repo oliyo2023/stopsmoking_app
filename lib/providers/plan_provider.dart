@@ -1,70 +1,37 @@
-import 'package:get/get.dart';
-import '../services/pocketbase_service.dart';
-import '../models/plan_models.dart';
+import 'package:jieyan_app/models/plan_models.dart';
+import 'package:jieyan_app/services/pocketbase_service.dart';
 
-class PlanProvider extends GetxService {
-  final PocketBaseService pbService = Get.find<PocketBaseService>();
+class PlanProvider {
+  final PocketBaseService pocketBaseService;
+
+  PlanProvider({required this.pocketBaseService});
 
   Future<List<PlanStage>> getPlanStages() async {
-    // TODO: 从 PocketBase 获取计划阶段配置
-    // 示例数据，需要替换为从 PocketBase 获取
-    return [
-      PlanStage(
-        name: '准备期',
-        durationDays: 7,
-        tasks: [
-          '评估吸烟习惯和诱因',
-          '设定明确的戒烟目标',
-          '制定初步的应对策略',
-        ],
-      ),
-      PlanStage(
-        name: '戒断期',
-        durationDays: 30,
-        tasks: [
-          '完全停止吸烟',
-          '积极应对戒断症状',
-          '寻求家人朋友支持',
-        ],
-      ),
-      PlanStage(
-        name: '巩固期',
-        durationDays: 90,
-        tasks: [
-          '巩固戒烟成果',
-          '避免复吸',
-          '保持健康生活方式',
-        ],
-      ),
-    ];
+    // Fetch plan stages from PocketBase
+    // Replace with actual PocketBase collection name and logic
+    final records =
+        await pocketBaseService.pb.collection('plan_stages').getList(
+              sort: '-created',
+            );
+
+    return records.items.map((record) {
+      return PlanStage(
+        name: record.data['name'],
+        durationDays: record.data['durationDays'],
+        tasks: List<String>.from(record.data['tasks']),
+      );
+    }).toList();
   }
 
   Future<void> saveSymptomRecord(SymptomRecord record) async {
-    // TODO: 将症状记录保存到 PocketBase
-    print('保存症状记录: ${record.symptom}'); // 示例，需要替换为 PocketBase 存储
-  }
-
-  Future<PlanProgress?> getPlanProgress() async {
-    // 模拟从数据库或网络获取计划进度
-    // 这里可以替换为实际的数据获取逻辑
-    return null; // 或者返回一个默认值或从数据源获取的值
-  }
-
-  Future<List<SymptomRecord>> getSymptomRecords() async {
-    // 模拟从数据库或网络获取症状记录
-    // 实际应用中应替换为真实的逻辑
-    return [
-      SymptomRecord(
-        dateTime: DateTime.now(),
-        symptom: '头痛',
-        copingStrategy: '休息片刻',
-      ),
-      // 添加更多模拟数据...
-    ];
-  }
-
-  Future<void> saveDailyCheckIn(DateTime date) async {
-    // 实现保存每日打卡记录的逻辑
-    // 例如：将打卡记录保存到数据库或本地存储
+    // Save symptom record to PocketBase
+    // Replace with actual PocketBase collection name and logic
+    await pocketBaseService.pb.collection('symptom_records').create(
+      body: {
+        'dateTime': record.dateTime.toIso8601String(),
+        'symptom': record.symptom,
+        'copingStrategy': record.copingStrategy,
+      },
+    );
   }
 }

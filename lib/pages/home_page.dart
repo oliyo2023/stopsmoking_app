@@ -4,6 +4,25 @@ import 'package:jieyan_app/services/pocketbase_service.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/pages/profile_page.dart';
 import 'package:jieyan_app/pages/progress_page.dart';
+import 'package:jieyan_app/widgets/interactive_calendar.dart';
+import 'package:jieyan_app/widgets/stage_timeline.dart';
+import 'package:pocketbase/pocketbase.dart'; // 导入 PocketBase
+import 'package:jieyan_app/controllers/interactive_calendar_controller.dart'; // 导入 InteractiveCalendarController
+
+/// 健康数据模型 (Mock 数据)
+class HealthDataModel {
+  final String name;
+  final double value;
+  final String unit;
+  final String trend;
+
+  HealthDataModel({
+    required this.name,
+    required this.value,
+    required this.unit,
+    required this.trend,
+  });
+}
 
 /// 首页
 class HomePage extends StatefulWidget {
@@ -18,8 +37,17 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0; // 当前选中的底部导航栏索引
   late PocketBaseService _pbService; // PocketBase 服务实例
   bool _isLoggedIn = false; // 用户是否已登录
-
+  RecordModel? _userInfo; // 用户信息
   String _currentDate = ''; // 当前日期
+  final _calendarController = Get.put(
+      InteractiveCalendarController()); // 初始化 InteractiveCalendarController
+  List<RecordModel> _recommendedArticles = []; // 推荐文章列表
+  List<HealthDataModel> _healthData = [
+    // Mock 健康数据
+    HealthDataModel(name: '心率', value: 72.0, unit: 'bpm', trend: 'stable'),
+    HealthDataModel(name: '血压', value: 120.0, unit: 'mmHg', trend: 'down'),
+    HealthDataModel(name: '肺活量', value: 4.5, unit: 'L', trend: 'up'),
+  ];
 
   @override
   void initState() {
@@ -28,6 +56,47 @@ class _HomePageState extends State<HomePage> {
     _checkLoginStatus(); // 检查登录状态
     _currentDate =
         DateTime.now().toString().split(' ')[0]; // 获取当前日期 (YYYY-MM-DD)
+    _fetchRecommendedArticles(); // 获取推荐文章
+  }
+
+  /// 获取用户信息
+  Future<void> _fetchUserInfo() async {
+    final userId = _pbService.pb.authStore.model.id;
+    if (userId == null) {
+      return;
+    }
+    final userInfo = await _pbService.getUserInfo(userId);
+    setState(() {
+      _userInfo = userInfo;
+    });
+  }
+
+  /// 获取推荐文章
+  Future<void> _fetchRecommendedArticles() async {
+    final articles = await _pbService.getRecommendedArticles(2); // 获取 2 篇推荐文章
+    setState(() {
+      _recommendedArticles = articles;
+    });
+  }
+
+  /// 提交每日打卡
+  Future<void> _submitCheckin() async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    try {
+      await _pbService.submitCheckin(
+        date: _currentDate,
+        smokeCount: 0, // 测试用默认值
+        reason: '无', // 测试用默认值
+      );
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('打卡成功!')),
+      );
+      _calendarController.fetchCheckinData(); // 更新日历显示
+    } catch (e) {
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('打卡失败,请重试!')),
+      );
+    }
   }
 
   /// 检查用户登录状态
@@ -37,6 +106,7 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _isLoggedIn = true; // 设置 _isLoggedIn 为 true
       });
+      _fetchUserInfo(); // 获取用户信息
     }
   }
 
@@ -50,57 +120,214 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('首页'),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       body: Stack(
         children: [
           IndexedStack(
             index: _selectedIndex, // 根据 _selectedIndex 显示不同的页面
             children: [
-              // 学习区 (始终可见)
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('今日戒烟进度',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (!mounted) {
-                          return; // 异步操作前检查是否 mounted
-                        }
-                        final scaffoldMessenger = ScaffoldMessenger.of(context);
-                        try {
-                          await _pbService.submitCheckin(
-                            date: _currentDate,
-                            smokeCount: 0, // 测试用默认值
-                            reason: '无', // 测试用默认值
-                          );
-                          scaffoldMessenger.showSnackBar(
-                            const SnackBar(content: Text('打卡成功!')),
-                          );
-                        } catch (e) {
-                          scaffoldMessenger.showSnackBar(
-                            const SnackBar(content: Text('打卡失败,请重试!')),
-                          );
-                        }
-                      },
-                      child: const Text('每日打卡'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        Get.toNamed('/plan'); // 跳转到戒烟计划页面
-                      },
-                      child: const Text('查看戒烟计划'),
-                    ),
-                  ],
+              // 首页 (重新设计的首页)
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 用户信息区域
+                      Container(
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50, // 浅蓝色背景
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 40,
+                              backgroundImage: _userInfo?.data['avatar'] != null
+                                  ? NetworkImage(_userInfo!.data['avatar'])
+                                      as ImageProvider<Object>
+                                  : AssetImage(
+                                      'assets/images/default_avatar.png'), // 默认头像
+                            ),
+                            SizedBox(height: 8),
+                            Text(_userInfo?.data['username'] ?? '用户昵称',
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold)),
+                            SizedBox(height: 4),
+                            Text('已戒烟 30 天', style: TextStyle(fontSize: 16)),
+                            SizedBox(height: 4),
+                            Text('累计节省 300 元，减少吸烟 600 支',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.grey)),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // 每日打卡
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('每日打卡',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              SizedBox(height: 10),
+                              InteractiveCalendar(),
+                              SizedBox(height: 10),
+                              Center(
+                                child: ElevatedButton(
+                                  onPressed: _submitCheckin, // 绑定打卡事件
+                                  child: Text('每日打卡'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // 戒烟计划
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('戒烟计划',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              SizedBox(height: 10),
+                              StageTimeline(),
+                              SizedBox(height: 10),
+                              Center(
+                                child: TextButton(
+                                  onPressed: () {
+                                    Get.toNamed('/plan'); // 跳转到戒烟计划页面
+                                  },
+                                  child: Text('查看完整计划'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // 学习推荐
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('今日推荐',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              SizedBox(height: 10),
+                              // 推荐文章列表
+                              Column(
+                                children: _recommendedArticles
+                                    .map((article) => Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(article.data['title'] ?? '',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Text(
+                                                article.data['summary'] ?? '',
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
+                              SizedBox(height: 10),
+                              Center(
+                                child: TextButton(
+                                  onPressed: () {
+                                    Get.toNamed('/article'); // 跳转到学习中心页面
+                                  },
+                                  child: Text('查看更多'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // 健康数据
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('健康数据',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                              SizedBox(height: 10),
+                              // 健康数据列表
+                              Column(
+                                children: _healthData
+                                    .map((data) => Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(data.name,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Text('${data.value} ${data.unit}',
+                                                  style: TextStyle(
+                                                      color: Colors
+                                                          .grey.shade700)),
+                                            ],
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
+                              SizedBox(height: 10),
+                              Center(
+                                child: TextButton(
+                                  onPressed: () {
+                                    Get.toNamed('/progress'); // 跳转到进度页面
+                                  },
+                                  child: Text('查看更多'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+                    ],
+                  ),
                 ),
               ),
-              const ArticlePage(), // 文章页面
-              const ProgressPage(), // 进度页面
-              // 我的区域 (根据登录状态条件显示)
+              const ArticlePage(),
+              const ProgressPage(),
               _MySection(isLoggedIn: _isLoggedIn),
             ],
           ),

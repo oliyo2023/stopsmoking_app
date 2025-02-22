@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/controllers/plan_controller.dart';
+import 'package:jieyan_app/widgets/interactive_calendar.dart';
+import 'package:jieyan_app/widgets/stage_timeline.dart';
+import 'package:jieyan_app/widgets/symptom_record_form.dart';
 
 class PlanPage extends StatelessWidget {
   final PlanController controller = Get.put(PlanController());
@@ -18,6 +21,8 @@ class PlanPage extends StatelessWidget {
 
         return ListView(
           children: [
+            const StageTimeline(),
+            const InteractiveCalendar(),
             ListTile(
               title: const Text('开始日期'),
               subtitle:
@@ -66,9 +71,9 @@ class PlanPage extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('记录症状'),
-                      content: SymptomForm(controller: controller),
+                    return const AlertDialog(
+                      title: Text('记录症状'),
+                      content: SymptomRecordForm(),
                     );
                   },
                 );
@@ -78,49 +83,6 @@ class PlanPage extends StatelessWidget {
           ],
         );
       }),
-    );
-  }
-}
-
-class SymptomForm extends StatelessWidget {
-  final PlanController controller;
-
-  SymptomForm({super.key, required this.controller});
-
-  final TextEditingController _symptomController = TextEditingController();
-  final TextEditingController _copingStrategyController =
-      TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          TextFormField(
-            controller: _symptomController,
-            decoration: const InputDecoration(
-              labelText: '症状',
-            ),
-          ),
-          TextFormField(
-            controller: _copingStrategyController,
-            decoration: const InputDecoration(
-              labelText: '应对策略',
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              controller.recordSymptom(
-                _symptomController.text,
-                _copingStrategyController.text,
-              );
-              Navigator.of(context).pop();
-            },
-            child: const Text('保存'),
-          ),
-        ],
-      ),
     );
   }
 }

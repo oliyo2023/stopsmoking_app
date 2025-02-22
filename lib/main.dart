@@ -16,8 +16,10 @@ Future<void> initServices() async {
   Get.put(UserProvider());
   // 初始化 ArticleProvider
   Get.put(ArticleProvider());
+  final pocketBaseService = Get.find<PocketBaseService>();
   // 初始化 PlanProvider
-  Get.put(PlanProvider()); // 注册 PlanProvider
+  Get.put(
+      PlanProvider(pocketBaseService: pocketBaseService)); // 注册 PlanProvider
   // 异步初始化 DeepSeekService
   await Get.putAsync(() => DeepSeekService(
           apiKey:
