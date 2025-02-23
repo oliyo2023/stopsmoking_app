@@ -117,14 +117,9 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index; // 更新当前选中的索引
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('首页'),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
       body: Stack(
         children: [
           IndexedStack(

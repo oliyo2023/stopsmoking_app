@@ -3,7 +3,6 @@ import 'package:jieyan_app/config.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jieyan_app/models/checkin_model.dart';
-import 'package:intl/intl.dart';
 
 class PocketBaseService extends GetxService {
   late final PocketBase _pb;
@@ -25,8 +24,8 @@ class PocketBaseService extends GetxService {
   Future<List<CheckinModel>> getCheckinRecords(
       String userId, DateTime startDate, DateTime endDate) async {
     final records = await _pb.collection('checkins').getList(
-          filter:
-              'user = "$userId" && date >= "${DateFormat('yyyy-MM-dd').format(startDate)}" && date <= "${DateFormat('yyyy-MM-dd').format(endDate)}"',
+        // filter:
+        // 'user = "$userId" && date >= "${DateFormat('yyyy-MM-dd').format(startDate)}" && date <= "${DateFormat('yyyy-MM-dd').format(endDate)}"',
         );
     return records.items
         .map((item) => CheckinModel.fromJson(item.toJson()))
