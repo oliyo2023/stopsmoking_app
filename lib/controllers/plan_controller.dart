@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import '../providers/plan_provider.dart';
-import '../models/plan_models.dart';
+import 'package:jieyan_app/providers/plan_provider.dart';
+import 'package:jieyan_app/models/plan_models.dart';
 
 class PlanController extends GetxController {
   final PlanProvider planProvider = Get.find<PlanProvider>();

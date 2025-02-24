@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jieyan_app/config.dart';
 import 'package:jieyan_app/providers/article_provider.dart';
 import 'package:jieyan_app/theme/app_theme.dart';
 import 'package:get/get.dart';
@@ -21,10 +22,7 @@ Future<void> initServices() async {
   Get.put(
       PlanProvider(pocketBaseService: pocketBaseService)); // 注册 PlanProvider
   // 异步初始化 DeepSeekService
-  await Get.putAsync(() => DeepSeekService(
-          apiKey:
-              "MFVE5OIQGe1tKxuPHxXbJRnGlcNe4Qw8DNyo81xNLcp0jNf1DemfjXHGr+eUonZM")
-      .init());
+  await Get.putAsync(() => DeepSeekService(apiKey: deepSeekApiKey).init());
 }
 
 /// 主函数,程序入口
