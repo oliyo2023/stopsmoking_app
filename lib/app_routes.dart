@@ -4,17 +4,17 @@ import 'package:jieyan_app/controllers/chat_controller.dart';
 import 'package:jieyan_app/controllers/plan_controller.dart';
 import 'package:jieyan_app/providers/user_provider.dart';
 import 'package:jieyan_app/pages/article_page.dart';
-import 'package:jieyan_app/pages/home_page.dart';
 import 'package:jieyan_app/pages/login_page.dart';
 import 'package:jieyan_app/pages/register_page.dart';
 import 'package:jieyan_app/pages/profile_page.dart';
 import 'package:jieyan_app/pages/plan_page.dart';
 import 'package:jieyan_app/pages/chat_page.dart';
 import 'package:jieyan_app/pages/article_detail_page.dart';
+import 'package:jieyan_app/screens/home_screen.dart';
 
 class AppRoutes {
   static final routes = [
-    GetPage(name: '/home', page: () => const HomePage()),
+    GetPage(name: '/home', page: () => HomeScreen()),
     GetPage(
       name: '/login',
       page: () => const LoginPage(),
