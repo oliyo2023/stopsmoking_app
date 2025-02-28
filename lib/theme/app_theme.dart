@@ -9,9 +9,15 @@ class AppColors {
   static const textPrimary = Colors.black;
   static const textSecondary = Color(0xFF757575);
   
+  // 按钮颜色
+  static const buttonPrimary = Colors.blue;
+  
   // 会员卡渐变色
   static const membershipGradientStart = Color(0xFF1E88E5);
   static const membershipGradientEnd = Color(0xFF1565C0);
+  
+  // 导航栏选中颜色
+  static const navSelected = Colors.blue;
   
   // 服务图标颜色
   static const serviceOrange = Colors.orange;
@@ -24,24 +30,10 @@ class AppColors {
   static const serviceAmber = Colors.amber;
   static const serviceIndigo = Colors.indigo;
   static const serviceDeepPurple = Colors.deepPurple;
-
-  // 表单相关颜色
-  static const formBorder = Colors.blue;
-  static const formLabel = Colors.black87;
-  static const formError = Colors.red;
   
-  // 按钮颜色
-  static const buttonPrimary = Colors.blue;
-  static const buttonText = Colors.white;
-  static const buttonDisabled = Colors.grey;
-  
-  // 提示信息颜色
-  static const snackbarError = Colors.red;
-  static const snackbarText = Colors.white;
-  
-  // 导航栏颜色
-  static const navSelected = Color(0xFFE65100); // amber[800]
-  static const navUnselected = Colors.grey;
+  // Snackbar 颜色
+  static const snackbarError = Color(0xFFD32F2F); // 错误提示背景色
+  static const snackbarText = Colors.white; // Snackbar 文字颜色
 }
 
 final appTheme = ThemeData(

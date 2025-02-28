@@ -16,8 +16,20 @@ class PlanPage extends StatelessWidget {
         title: const Text('戒烟计划'),
       ),
       body: Obx(() {
+        if (controller.smokingInfo.value == null) {
+          return _buildSmokingInfoForm();
+        }
+
         if (controller.planProgress.value == null) {
-          return const Center(child: Text('尚未开始戒烟计划'));
+          return Column(
+            children: [
+              _buildSmokingAnalysis(),
+              ElevatedButton(
+                onPressed: () => controller.startPlan(DateTime.now()),
+                child: const Text('开始戒烟计划'),
+              ),
+            ],
+          );
         }
 
         return ListView(
@@ -84,6 +96,83 @@ class PlanPage extends StatelessWidget {
           ],
         );
       }),
+    );
+  }
+
+  Widget _buildSmokingInfoForm() {
+    final TextEditingController smokingAgeController = TextEditingController();
+    final TextEditingController dailyAmountController = TextEditingController();
+    final TextEditingController brandController = TextEditingController();
+    final TextEditingController priceController = TextEditingController();
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('请填写您的吸烟信息', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 20),
+          TextField(
+            controller: smokingAgeController,
+            decoration: const InputDecoration(labelText: '吸烟年限（年）'),
+            keyboardType: TextInputType.number,
+          ),
+          TextField(
+            controller: dailyAmountController,
+            decoration: const InputDecoration(labelText: '每日吸烟量（支）'),
+            keyboardType: TextInputType.number,
+          ),
+          TextField(
+            controller: brandController,
+            decoration: const InputDecoration(labelText: '香烟品牌'),
+          ),
+          TextField(
+            controller: priceController,
+            decoration: const InputDecoration(labelText: '单包价格（元）'),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              controller.collectSmokingInfo(
+                smokingAge: int.parse(smokingAgeController.text),
+                dailySmokingAmount: int.parse(dailyAmountController.text),
+                cigaretteBrand: brandController.text,
+                cigarettePrice: double.parse(priceController.text),
+              );
+            },
+            child: const Text('提交信息'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSmokingAnalysis() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('吸烟分析结果', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 20),
+          const Text('经济影响', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ...controller.economicImpact.entries.map(
+            (entry) => ListTile(
+              title: Text(entry.key),
+              trailing: Text('¥${entry.value.toStringAsFixed(2)}'),
+            ),
+          ),
+          const Divider(),
+          const Text('健康影响', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ...controller.healthImpact.entries.map(
+            (entry) => ListTile(
+              title: Text(entry.key),
+              trailing: Text(entry.value.toString()),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

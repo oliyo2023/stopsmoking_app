@@ -20,7 +20,7 @@ class ProfilePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings, color: AppColors.textSecondary),
             onPressed: () {
-              Navigator.pushNamed(context, '/settings');
+              // TODO: 实现设置页面导航
             },
           ),
         ],
@@ -95,7 +95,6 @@ class ProfilePage extends StatelessWidget {
                     // 编辑资料按钮
                     TextButton(
                       onPressed: () {
-                        // Navigator.pushNamed(context, '/edit_profile');
                         // TODO: 实现编辑资料功能
                       },
                       style: TextButton.styleFrom(
@@ -135,8 +134,7 @@ class ProfilePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.blue[300]!
-                .withValues(red: 0, green: 0, blue: 0, alpha: 0.3),
+            color: Colors.blue[300]!.withValues(red: 0, green: 0, blue: 0, alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -155,10 +153,8 @@ class ProfilePage extends StatelessWidget {
           // 优惠信息
           Text(
             '限时！VIP 最低 9 折～',
-            style: TextStyle(
-                color: Colors.white
-                    .withValues(red: 255, green: 255, blue: 255, alpha: 0.8),
-                fontSize: 14),
+            style:
+                TextStyle(color: Colors.white.withValues(red: 255, green: 255, blue: 255, alpha: 0.8), fontSize: 14),
           ),
           const SizedBox(height: 20),
           // 加入会员按钮

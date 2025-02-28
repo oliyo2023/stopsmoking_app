@@ -1,29 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:jieyan_app/pages/article_page.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
-import 'package:jieyan_app/theme/app_theme.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/pages/profile_page.dart';
 import 'package:jieyan_app/pages/progress_page.dart';
-import 'package:jieyan_app/widgets/interactive_calendar.dart';
-import 'package:jieyan_app/widgets/stage_timeline.dart';
-import 'package:pocketbase/pocketbase.dart'; // 导入 PocketBase
-import 'package:jieyan_app/controllers/interactive_calendar_controller.dart'; // 导入 InteractiveCalendarController
+import 'package:pocketbase/pocketbase.dart';
+import 'package:jieyan_app/controllers/interactive_calendar_controller.dart';
+import 'package:jieyan_app/theme/app_theme.dart';
+import 'package:jieyan_app/widgets/user_info_section.dart';
+import 'package:jieyan_app/widgets/daily_checkin_section.dart';
+import 'package:jieyan_app/widgets/quit_plan_section.dart';
+import 'package:jieyan_app/widgets/recommended_articles_section.dart';
+import 'package:jieyan_app/widgets/health_data_section.dart';
 
-/// 健康数据模型 (Mock 数据)
-class HealthDataModel {
-  final String name;
-  final double value;
-  final String unit;
-  final String trend;
-
-  HealthDataModel({
-    required this.name,
-    required this.value,
-    required this.unit,
-    required this.trend,
-  });
-}
+// 使用从 health_data_section.dart 导入的 HealthDataModel 类
 
 /// 首页
 class HomePage extends StatefulWidget {
@@ -117,6 +107,7 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index; // 更新当前选中的索引
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,193 +123,16 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 用户信息区域
-                      Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: AppColors.buttonPrimary.withValues(red: 0, green: 0, blue: 0, alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Column(
-                          children: [
-                            CircleAvatar(
-                              radius: 40,
-                              backgroundImage: _userInfo?.data['avatar'] != null
-                                  ? NetworkImage(_userInfo!.data['avatar'])
-                                      as ImageProvider<Object>
-                                  : const AssetImage(
-                                      'assets/images/default_avatar.png'), // 默认头像
-                            ),
-                            const SizedBox(height: 8),
-                            Text(_userInfo?.data['username'] ?? '用户昵称',
-                                style: const TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 4),
-                            const Text('已戒烟 30 天',
-                                style: TextStyle(fontSize: 16)),
-                            const SizedBox(height: 4),
-                            const Text('累计节省 300 元，减少吸烟 600 支',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: AppColors.textSecondary)),
-                          ],
-                        ),
-                      ),
+                      UserInfoSection(userInfo: _userInfo),
                       const SizedBox(height: 24),
-
-                      // 每日打卡
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('每日打卡',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 10),
-                              const InteractiveCalendar(),
-                              const SizedBox(height: 10),
-                              Center(
-                                child: ElevatedButton(
-                                  onPressed: _submitCheckin, // 绑定打卡事件
-                                  child: const Text('每日打卡'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      DailyCheckinSection(onCheckin: _submitCheckin),
                       const SizedBox(height: 24),
-
-                      // 戒烟计划
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('戒烟计划',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 10),
-                              const StageTimeline(),
-                              const SizedBox(height: 10),
-                              Center(
-                                child: TextButton(
-                                  onPressed: () {
-                                    Get.toNamed('/plan'); // 跳转到戒烟计划页面
-                                  },
-                                  child: const Text('查看完整计划'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      const QuitPlanSection(),
                       const SizedBox(height: 24),
-
-                      // 学习推荐
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('今日推荐',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 10),
-                              // 推荐文章列表
-                              Column(
-                                children: _recommendedArticles
-                                    .map((article) => Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(article.data['title'] ?? '',
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              Text(
-                                                article.data['summary'] ?? '',
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ],
-                                          ),
-                                        ))
-                                    .toList(),
-                              ),
-                              const SizedBox(height: 10),
-                              Center(
-                                child: TextButton(
-                                  onPressed: () {
-                                    Get.toNamed('/article'); // 跳转到学习中心页面
-                                  },
-                                  child: const Text('查看更多'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      RecommendedArticlesSection(
+                          recommendedArticles: _recommendedArticles),
                       const SizedBox(height: 24),
-
-                      // 健康数据
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('健康数据',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 10),
-                              // 健康数据列表
-                              Column(
-                                children: _healthData
-                                    .map((data) => Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(data.name,
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              Text('${data.value} ${data.unit}',
-                                                  style: const TextStyle(
-                                                      color: AppColors
-                                                          .textSecondary)),
-                                            ],
-                                          ),
-                                        ))
-                                    .toList(),
-                              ),
-                              const SizedBox(height: 10),
-                              Center(
-                                child: TextButton(
-                                  onPressed: () {
-                                    Get.toNamed('/progress'); // 跳转到进度页面
-                                  },
-                                  child: const Text('查看更多'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      HealthDataSection(healthData: _healthData),
                       const SizedBox(height: 24),
                     ],
                   ),
