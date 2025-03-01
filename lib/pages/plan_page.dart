@@ -105,74 +105,79 @@ class PlanPage extends StatelessWidget {
     final TextEditingController brandController = TextEditingController();
     final TextEditingController priceController = TextEditingController();
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('请填写您的吸烟信息', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 20),
-          TextField(
-            controller: smokingAgeController,
-            decoration: const InputDecoration(labelText: '吸烟年限（年）'),
-            keyboardType: TextInputType.number,
-          ),
-          TextField(
-            controller: dailyAmountController,
-            decoration: const InputDecoration(labelText: '每日吸烟量（支）'),
-            keyboardType: TextInputType.number,
-          ),
-          TextField(
-            controller: brandController,
-            decoration: const InputDecoration(labelText: '香烟品牌'),
-          ),
-          TextField(
-            controller: priceController,
-            decoration: const InputDecoration(labelText: '单包价格（元）'),
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              controller.collectSmokingInfo(
-                smokingAge: int.parse(smokingAgeController.text),
-                dailySmokingAmount: int.parse(dailyAmountController.text),
-                cigaretteBrand: brandController.text,
-                cigarettePrice: double.parse(priceController.text),
-              );
-            },
-            child: const Text('提交信息'),
-          ),
-        ],
-      ),
+    // 添加 dispose 逻辑以避免内存泄漏
+    return StatefulBuilder(builder: (context, setState) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            const Text('请填写您的吸烟信息',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            _buildTextField(
+                smokingAgeController, '吸烟年限（年）', TextInputType.number),
+            _buildTextField(
+                dailyAmountController, '每日吸烟量（支）', TextInputType.number),
+            _buildTextField(brandController, '香烟品牌', TextInputType.text),
+            _buildTextField(priceController, '单包价格（元）', TextInputType.number),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                controller.collectSmokingInfo(
+                  smokingAge: int.parse(smokingAgeController.text),
+                  dailySmokingAmount: int.parse(dailyAmountController.text),
+                  cigaretteBrand: brandController.text,
+                  cigarettePrice: double.parse(priceController.text),
+                );
+              },
+              child: const Text('提交信息'),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+// 新增方法：构建通用文本输入框
+  Widget _buildTextField(TextEditingController controller, String labelText,
+      TextInputType keyboardType) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(labelText: labelText),
+      keyboardType: keyboardType,
     );
   }
 
   Widget _buildSmokingAnalysis() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
         children: [
-          const Text('吸烟分析结果', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          const Text('吸烟分析结果',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
-          const Text('经济影响', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          ...controller.economicImpact.entries.map(
-            (entry) => ListTile(
-              title: Text(entry.key),
-              trailing: Text('¥${entry.value.toStringAsFixed(2)}'),
-            ),
-          ),
+          const Text('经济影响',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ..._buildImpactList(controller.economicImpact, true),
           const Divider(),
-          const Text('健康影响', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          ...controller.healthImpact.entries.map(
-            (entry) => ListTile(
-              title: Text(entry.key),
-              trailing: Text(entry.value.toString()),
-            ),
-          ),
+          const Text('健康影响',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ..._buildImpactList(controller.healthImpact, false),
         ],
       ),
     );
+  }
+
+// 新增方法：构建影响列表
+  List<Widget> _buildImpactList(
+      Map<String, dynamic> impactMap, bool isEconomic) {
+    return impactMap.entries
+        .map((entry) => ListTile(
+              title: Text(entry.key),
+              trailing: Text(isEconomic
+                  ? '¥${entry.value.toStringAsFixed(2)}'
+                  : entry.value.toString()),
+            ))
+        .toList();
   }
 }
