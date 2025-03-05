@@ -12,6 +12,7 @@ import 'package:jieyan_app/widgets/daily_checkin_section.dart';
 import 'package:jieyan_app/widgets/quit_plan_section.dart';
 import 'package:jieyan_app/widgets/recommended_articles_section.dart';
 import 'package:jieyan_app/widgets/health_data_section.dart';
+import 'package:jieyan_app/controllers/settings_controller.dart';
 
 // 使用从 health_data_section.dart 导入的 HealthDataModel 类
 
@@ -146,11 +147,14 @@ class _HomePageState extends State<HomePage> {
           Positioned(
             bottom: 16.0,
             right: 16.0,
-            child: FloatingActionButton(
-              onPressed: () {
-                Get.toNamed('/chat');
-              },
-              child: const Icon(Icons.chat),
+            child: Visibility(
+                visible: Get.find<SettingsController>().enableAIChat.value,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    Get.toNamed('/chat');
+                  },
+                  child: const Icon(Icons.chat),
+                ),
             ),
           ),
         ],
