@@ -2,42 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/providers/user_provider.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class RegisterPage extends GetView<UserProvider> {
+  RegisterPage({Key? key}) : super(key: key);
 
-  @override
-  State<RegisterPage> createState() => _RegisterPageState();
-}
-
-class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isLoading = false;
-  late final UserProvider _userProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    _userProvider = Get.find<UserProvider>(); // 获取 UserProvider 实例
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  final _isLoading = false.obs;
 
   Future<void> _registerUser() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+      _isLoading.value = true;
       try {
-        await _userProvider.register(
+        await controller.register(
           _emailController.text,
           _passwordController.text,
           _nameController.text,
@@ -46,11 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
       } catch (e) {
         // 错误已经在 UserProvider 中处理
       } finally {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
+        _isLoading.value = false;
       }
     }
   }
@@ -122,19 +96,19 @@ class _RegisterPageState extends State<RegisterPage> {
                 },
               ),
               const SizedBox(height: 24.0),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _registerUser,
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('注册'),
-                ),
-              ),
+              Obx(() => SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isLoading.value ? null : _registerUser,
+                      child: _isLoading.value
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('注册'),
+                    ),
+                  )),
               const SizedBox(height: 16.0),
               TextButton(
                 onPressed: () => Get.back(),

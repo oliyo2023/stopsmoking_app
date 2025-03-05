@@ -18,11 +18,10 @@ class InteractiveCalendarController extends GetxController {
   }
 
   Future<void> fetchCheckinData() async {
-    final userId = _pbService.pb.authStore.model.id;
-    if (userId == null) {
-      // 用户未登录，直接返回
+    if (_pbService.pb.authStore.model == null) {
       return;
     }
+    final userId = _pbService.pb.authStore.model.id;
     final now = focusedDay;
     final firstDayOfMonth = DateTime(now.year, now.month, 1);
     final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);

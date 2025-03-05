@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jieyan_app/theme/app_theme.dart';
+import 'package:jieyan_app/pages/settings_page.dart';
 
 /// 个人中心页面
 /// 展示用户个人信息、会员卡片和各类服务入口
@@ -20,7 +21,10 @@ class ProfilePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings, color: AppColors.textSecondary),
             onPressed: () {
-              // TODO: 实现设置页面导航
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
             },
           ),
         ],
@@ -134,7 +138,8 @@ class ProfilePage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.blue[300]!.withValues(red: 0, green: 0, blue: 0, alpha: 0.3),
+            color: Colors.blue[300]!
+                .withValues(red: 0, green: 0, blue: 0, alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -153,8 +158,10 @@ class ProfilePage extends StatelessWidget {
           // 优惠信息
           Text(
             '限时！VIP 最低 9 折～',
-            style:
-                TextStyle(color: Colors.white.withValues(red: 255, green: 255, blue: 255, alpha: 0.8), fontSize: 14),
+            style: TextStyle(
+                color: Colors.white
+                    .withValues(red: 255, green: 255, blue: 255, alpha: 0.8),
+                fontSize: 14),
           ),
           const SizedBox(height: 20),
           // 加入会员按钮

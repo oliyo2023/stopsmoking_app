@@ -1,11 +1,33 @@
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsController extends GetxController {
-  // AI 聊天功能开关状态
-  final RxBool enableAIChat = false.obs;
+  final _isChatVisible = RxBool(true);
+  bool get isChatVisible => _isChatVisible.value;
 
-  // 切换 AI 聊天功能开关
-  void toggleAIChat(bool value) {
-    enableAIChat.value = value;
+  @override
+  void onInit() {
+    super.onInit();
+    loadChatVisibility();
+  }
+
+  loadChatVisibility() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _isChatVisible.value = (prefs.getBool('isChatVisible') ?? true);
+  }
+
+  saveChatVisibility(bool value) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isChatVisible', value);
+      _isChatVisible(value);
+    } catch (e) {
+      print('Error saving chat visibility: $e');
+      // TODO: Show error message to user
+    }
+  }
+
+  void toggleChatVisibility() {
+    saveChatVisibility(!isChatVisible);
   }
 }
