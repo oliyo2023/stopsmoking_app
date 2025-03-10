@@ -120,20 +120,17 @@ class HomeController extends GetxController {
                 Text('您已经吸了约$totalCigarettes支烟'),
                 Text('减少的寿命约$lifeReductionDays天'),
                 const SizedBox(height: 8),
-                ...healthImpacts
-                    .map((impact) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('• ',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              Expanded(child: Text(impact)),
-                            ],
-                          ),
-                        ))
-                    .toList(),
+                ...healthImpacts.map((impact) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('• ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          Expanded(child: Text(impact)),
+                        ],
+                      ),
+                    )),
 
                 const SizedBox(height: 20),
                 const Text(
