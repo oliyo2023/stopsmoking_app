@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:jieyan_app/controllers/settings_controller.dart';
 
-class MyPage extends StatelessWidget {
-  const MyPage({super.key});
+class MyPage extends GetView<SettingsController> {
+  const MyPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('我的页')),
-      body: const Center(child: Text('My Page Content')),
+      body: Column(
+        children: [
+          const Text('My Page Content'),
+          _buildAIChatSwitch(),
+        ],
+      ),
     );
+  }
+
+  Widget _buildAIChatSwitch() {
+    return Obx(() => SwitchListTile(
+          title: const Text('启用AI聊天助手'),
+          value: controller.isChatVisible,
+          onChanged: (value) => controller.toggleChatVisibility(),
+        ));
   }
 }

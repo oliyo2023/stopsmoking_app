@@ -2,169 +2,119 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jieyan_app/providers/user_provider.dart';
 
-class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+class RegisterPage extends GetView<UserProvider> {
+  RegisterPage({Key? key}) : super(key: key);
+
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _isLoading = false.obs;
+
+  Future<void> _registerUser() async {
+    if (_formKey.currentState!.validate()) {
+      _isLoading.value = true;
+      try {
+        await controller.register(
+          _emailController.text,
+          _passwordController.text,
+          _nameController.text,
+        );
+        Get.offAllNamed('/home');
+      } catch (e) {
+        // 错误已经在 UserProvider 中处理
+      } finally {
+        _isLoading.value = false;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Get.find<UserProvider>();
-    final usernameController = TextEditingController();
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('注册'),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF7CB342), Color(0xFF558B2F)],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20),
-                // Logo或图标
-                const Icon(
-                  Icons.smoke_free,
-                  size: 100,
-                  color: Colors.white,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: '昵称',
+                  isDense: true,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
-                const SizedBox(height: 40),
-                // 用户名输入框
-                TextField(
-                  controller: usernameController,
-                  decoration: InputDecoration(
-                    labelText: '用户名',
-                    prefixIcon: const Icon(Icons.person, color: Colors.white70),
-                    labelStyle: const TextStyle(color: Colors.white70),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(color: Colors.white70),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(color: Colors.white),
-                    ),
-                  ),
-                  style: const TextStyle(color: Colors.white),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '请输入昵称';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _emailController,
+                decoration: const InputDecoration(
+                  labelText: '邮箱',
+                  isDense: true,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
-                const SizedBox(height: 20),
-                // 邮箱输入框
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: '邮箱',
-                    prefixIcon: const Icon(Icons.email, color: Colors.white70),
-                    labelStyle: const TextStyle(color: Colors.white70),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(color: Colors.white70),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(color: Colors.white),
-                    ),
-                  ),
-                  style: const TextStyle(color: Colors.white),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '请输入邮箱';
+                  }
+                  if (!GetUtils.isEmail(value)) {
+                    return '请输入有效的邮箱地址';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(
+                  labelText: '密码',
+                  isDense: true,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
-                const SizedBox(height: 20),
-                // 密码输入框
-                TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: '密码',
-                    prefixIcon: const Icon(Icons.lock, color: Colors.white70),
-                    labelStyle: const TextStyle(color: Colors.white70),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(color: Colors.white70),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '请输入密码';
+                  }
+                  if (value.length < 6) {
+                    return '密码长度至少为6位';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24.0),
+              Obx(() => SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isLoading.value ? null : _registerUser,
+                      child: _isLoading.value
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('注册'),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(color: Colors.white),
-                    ),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                ),
-                const SizedBox(height: 20),
-                // 确认密码输入框
-                TextField(
-                  controller: confirmPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: '确认密码',
-                    prefixIcon: const Icon(Icons.lock, color: Colors.white70),
-                    labelStyle: const TextStyle(color: Colors.white70),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(color: Colors.white70),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: const BorderSide(color: Colors.white),
-                    ),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                ),
-                const SizedBox(height: 30),
-                // 注册按钮
-                ElevatedButton(
-                  onPressed: () async {
-                    if (passwordController.text !=
-                        confirmPasswordController.text) {
-                      Get.snackbar('错误', '两次输入的密码不一致');
-                      return;
-                    }
-                    try {
-                      await userProvider.register(
-                        usernameController.text,
-                        emailController.text,
-                        passwordController.text,
-                      );
-                      Get.back(); // 注册成功后返回登录页
-                      Get.snackbar('成功', '注册成功，请登录');
-                    } catch (e) {
-                      Get.snackbar('错误', e.toString());
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: const Text(
-                    '注册',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                // 返回登录按钮
-                TextButton(
-                  onPressed: () => Get.back(),
-                  child: const Text(
-                    '已有账号？返回登录',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
+                  )),
+              const SizedBox(height: 16.0),
+              TextButton(
+                onPressed: () => Get.back(),
+                child: const Text('已有账号？返回登录'),
+              ),
+            ],
           ),
         ),
       ),
