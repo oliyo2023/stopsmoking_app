@@ -22,7 +22,6 @@ class SettingsController extends GetxController {
       prefs.setBool('isChatVisible', value);
       _isChatVisible(value);
     } catch (e) {
-      print('Error saving chat visibility: $e');
       // TODO: Show error message to user
     }
   }

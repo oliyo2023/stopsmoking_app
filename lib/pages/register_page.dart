@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:jieyan_app/providers/user_provider.dart';
 
 class RegisterPage extends GetView<UserProvider> {
-  RegisterPage({Key? key}) : super(key: key);
+  RegisterPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();

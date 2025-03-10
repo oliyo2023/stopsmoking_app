@@ -4,7 +4,7 @@ import 'package:jieyan_app/providers/user_provider.dart';
 import 'package:jieyan_app/theme/app_theme.dart';
 
 class LoginPage extends GetView<UserProvider> {
-  LoginPage({Key? key}) : super(key: key);
+  LoginPage({super.key});
 
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();

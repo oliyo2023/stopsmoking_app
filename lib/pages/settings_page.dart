@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:jieyan_app/controllers/settings_controller.dart';
 
 class SettingsPage extends GetView<SettingsController> {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   Widget _buildAIChatSwitch() {
     return Obx(() => SwitchListTile(

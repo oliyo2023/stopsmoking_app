@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:jieyan_app/pages/article_page.dart';
 import 'package:jieyan_app/services/pocketbase_service.dart';
@@ -19,24 +21,23 @@ import 'package:jieyan_app/controllers/settings_controller.dart';
 /// 首页
 class HomePage extends GetView<SettingsController> {
   /// 构造函数
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final PocketBaseService _pbService = Get.find(); // 获取 PocketBaseService 实例
-    final InteractiveCalendarController _calendarController =
+    final PocketBaseService pbService = Get.find(); // 获取 PocketBaseService 实例
+    final InteractiveCalendarController calendarController =
         Get.find(); // 初始化 InteractiveCalendarController
-    final ValueNotifier<int> _selectedIndex =
+    final ValueNotifier<int> selectedIndex =
         ValueNotifier<int>(0); // 当前选中的底部导航栏索引
-    final ValueNotifier<bool> _isLoggedIn =
-        ValueNotifier<bool>(false); // 用户是否已登录
-    final ValueNotifier<RecordModel?> _userInfo =
+// 用户是否已登录
+    final ValueNotifier<RecordModel?> userInfo =
         ValueNotifier<RecordModel?>(null); // 用户信息
-    final ValueNotifier<String> _currentDate =
+    final ValueNotifier<String> currentDate =
         ValueNotifier<String>(DateTime.now().toString().split(' ')[0]); // 当前日期
-    final ValueNotifier<List<RecordModel>> _recommendedArticles =
+    final ValueNotifier<List<RecordModel>> recommendedArticles =
         ValueNotifier<List<RecordModel>>([]); // 推荐文章列表
-    final List<HealthDataModel> _healthData = [
+    final List<HealthDataModel> healthData = [
       // Mock 健康数据
       HealthDataModel(name: '心率', value: 72.0, unit: 'bpm', trend: 'stable'),
       HealthDataModel(name: '血压', value: 120.0, unit: 'mmHg', trend: 'down'),
@@ -47,7 +48,7 @@ class HomePage extends GetView<SettingsController> {
       body: Stack(
         children: [
           ValueListenableBuilder<int>(
-            valueListenable: _selectedIndex,
+            valueListenable: selectedIndex,
             builder: (context, selectedIndex, child) {
               return IndexedStack(
                 index: selectedIndex, // 根据 _selectedIndex 显示不同的页面
@@ -60,7 +61,7 @@ class HomePage extends GetView<SettingsController> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ValueListenableBuilder<RecordModel?>(
-                            valueListenable: _userInfo,
+                            valueListenable: userInfo,
                             builder: (context, userInfo, child) {
                               return UserInfoSection(userInfo: userInfo);
                             },
@@ -70,15 +71,15 @@ class HomePage extends GetView<SettingsController> {
                             final scaffoldMessenger =
                                 ScaffoldMessenger.of(context);
                             try {
-                              await _pbService.submitCheckin(
-                                date: _currentDate.value,
+                              await pbService.submitCheckin(
+                                date: currentDate.value,
                                 smokeCount: 0, // 测试用默认值
                                 reason: '无', // 测试用默认值
                               );
                               scaffoldMessenger.showSnackBar(
                                 const SnackBar(content: Text('打卡成功!')),
                               );
-                              _calendarController.fetchCheckinData(); // 更新日历显示
+                              calendarController.fetchCheckinData(); // 更新日历显示
                             } catch (e) {
                               scaffoldMessenger.showSnackBar(
                                 const SnackBar(content: Text('打卡失败,请重试!')),
@@ -89,14 +90,14 @@ class HomePage extends GetView<SettingsController> {
                           const QuitPlanSection(),
                           const SizedBox(height: 24),
                           ValueListenableBuilder<List<RecordModel>>(
-                            valueListenable: _recommendedArticles,
+                            valueListenable: recommendedArticles,
                             builder: (context, recommendedArticles, child) {
                               return RecommendedArticlesSection(
                                   recommendedArticles: recommendedArticles);
                             },
                           ),
                           const SizedBox(height: 24),
-                          HealthDataSection(healthData: _healthData),
+                          HealthDataSection(healthData: healthData),
                           const SizedBox(height: 24),
                         ],
                       ),
@@ -125,7 +126,7 @@ class HomePage extends GetView<SettingsController> {
         ],
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
-        valueListenable: _selectedIndex,
+        valueListenable: selectedIndex,
         builder: (context, selectedIndex, child) {
           return BottomNavigationBar(
             items: const <BottomNavigationBarItem>[
@@ -149,7 +150,7 @@ class HomePage extends GetView<SettingsController> {
             currentIndex: selectedIndex, // 当前选中的索引
             selectedItemColor: AppColors.navSelected, // 选中项的颜色
             onTap: (index) {
-              _selectedIndex.value = index; // 更新当前选中的索引
+              selectedIndex = index; // 更新当前选中的索引
             }, // 点击事件处理
           );
         },

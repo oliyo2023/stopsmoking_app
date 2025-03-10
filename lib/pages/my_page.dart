@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:jieyan_app/controllers/settings_controller.dart';
 
 class MyPage extends GetView<SettingsController> {
-  const MyPage({Key? key}) : super(key: key);
+  const MyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
