@@ -127,7 +127,7 @@ class PlanController extends GetxController {
   void dailyCheckIn() {
     if (planProgress.value != null) {
       planProgress.value!.dailyCheckIn[DateTime.now()] = true;
-      // planProvider.saveDailyCheckIn(DateTime.now()); // This method doesn't exist in PlanProvider
+      Get.find<PlanProvider>().saveDailyCheckIn(DateTime.now()); // 调用持久化方法
       planProgress.refresh(); // 触发 UI 更新
     }
   }

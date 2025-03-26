@@ -29,6 +29,16 @@ class ArticlePage extends StatelessWidget {
             return const Center(child: Text('No articles found.'));
           }
 
+          final _isLoadingMore = false.obs;
+
+          if (!_isLoadingMore.value && controller.hasMore) {
+            _isLoadingMore.value = true;
+            Future.microtask(() async {
+              await controller.loadMoreArticles();
+              _isLoadingMore.value = false;
+            });
+          }
+
           return ListView.builder(
             itemCount: controller.articles.length +
                 (controller.hasMore ? 1 : 0), // 列表项数量,如果有更多数据,则加 1 (用于显示加载指示器)

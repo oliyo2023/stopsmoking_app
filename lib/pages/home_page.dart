@@ -150,7 +150,7 @@ class HomePage extends GetView<SettingsController> {
             currentIndex: selectedIndex, // 当前选中的索引
             selectedItemColor: AppColors.navSelected, // 选中项的颜色
             onTap: (index) {
-              selectedIndex = index; // 更新当前选中的索引
+              selectedIndex.value = index; // 使用 ValueNotifier 的 value 属性
             }, // 点击事件处理
           );
         },

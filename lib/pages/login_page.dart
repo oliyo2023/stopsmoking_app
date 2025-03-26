@@ -21,9 +21,15 @@ class LoginPage extends GetView<UserProvider> {
         );
         Get.offAllNamed('/home');
       } catch (e) {
+        String errorMessage = '登录失败，请稍后重试';
+        if (e.toString().contains('network')) {
+          errorMessage = '网络连接失败，请检查您的网络';
+        } else if (e.toString().contains('invalid')) {
+          errorMessage = '邮箱或密码无效';
+        }
         Get.snackbar(
-          '登录失败',
-          e.toString(),
+          '错误',
+          errorMessage,
           backgroundColor: AppColors.snackbarError,
           colorText: AppColors.snackbarText,
         );
