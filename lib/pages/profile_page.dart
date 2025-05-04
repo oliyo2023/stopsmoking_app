@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jieyan_app/theme/app_theme.dart';
 import 'package:jieyan_app/pages/settings_page.dart';
+import 'package:get/get.dart';
+import 'package:jieyan_app/app_routes.dart';
 
 /// 个人中心页面
 /// 展示用户个人信息、会员卡片和各类服务入口
@@ -99,7 +101,7 @@ class ProfilePage extends StatelessWidget {
                     // 编辑资料按钮
                     TextButton(
                       onPressed: () {
-                        // TODO: 实现编辑资料功能
+                        Get.toNamed(AppRoutes.editProfile); // Navigate to Edit Profile page
                       },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,
@@ -167,7 +169,7 @@ class ProfilePage extends StatelessWidget {
           // 加入会员按钮
           ElevatedButton(
             onPressed: () {
-              // TODO: 实现加入会员功能
+              Get.toNamed(AppRoutes.membership); // Navigate to Membership page
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,

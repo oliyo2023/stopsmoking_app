@@ -21,15 +21,15 @@ import 'package:jieyan_app/controllers/settings_controller.dart';
 /// 首页
 class HomePage extends GetView<SettingsController> {
   /// 构造函数
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final ValueNotifier<int> selectedIndex = ValueNotifier<int>(0); // 当前选中的底部导航栏索引
 
   @override
   Widget build(BuildContext context) {
     final PocketBaseService pbService = Get.find(); // 获取 PocketBaseService 实例
     final InteractiveCalendarController calendarController =
         Get.find(); // 初始化 InteractiveCalendarController
-    final ValueNotifier<int> selectedIndex =
-        ValueNotifier<int>(0); // 当前选中的底部导航栏索引
 // 用户是否已登录
     final ValueNotifier<RecordModel?> userInfo =
         ValueNotifier<RecordModel?>(null); // 用户信息
@@ -127,8 +127,9 @@ class HomePage extends GetView<SettingsController> {
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
         valueListenable: selectedIndex,
-        builder: (context, selectedIndex, child) {
+        builder: (context, value, child) {
           return BottomNavigationBar(
+            type: BottomNavigationBarType.fixed, // 固定类型，防止标签消失
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -136,7 +137,7 @@ class HomePage extends GetView<SettingsController> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.article),
-                label: '学习',
+                label: '知识',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.timeline),
@@ -147,7 +148,7 @@ class HomePage extends GetView<SettingsController> {
                 label: '我的',
               ),
             ],
-            currentIndex: selectedIndex, // 当前选中的索引
+            currentIndex: value, // Use value from builder
             selectedItemColor: AppColors.navSelected, // 选中项的颜色
             onTap: (index) {
               selectedIndex.value = index; // 使用 ValueNotifier 的 value 属性

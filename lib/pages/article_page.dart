@@ -29,13 +29,13 @@ class ArticlePage extends StatelessWidget {
             return const Center(child: Text('No articles found.'));
           }
 
-          final _isLoadingMore = false.obs;
+          final isLoadingMore = false.obs;
 
-          if (!_isLoadingMore.value && controller.hasMore) {
-            _isLoadingMore.value = true;
+          if (!isLoadingMore.value && controller.hasMore) {
+            isLoadingMore.value = true;
             Future.microtask(() async {
               await controller.loadMoreArticles();
-              _isLoadingMore.value = false;
+              isLoadingMore.value = false;
             });
           }
 

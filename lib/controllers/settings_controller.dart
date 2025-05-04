@@ -22,7 +22,12 @@ class SettingsController extends GetxController {
       prefs.setBool('isChatVisible', value);
       _isChatVisible(value);
     } catch (e) {
-      // TODO: Show error message to user
+      // Show error message using GetX snackbar
+      Get.snackbar(
+        'Error',
+        'Failed to save chat visibility setting: $e',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 

@@ -12,13 +12,20 @@ import 'package:jieyan_app/pages/profile_page.dart';
 import 'package:jieyan_app/pages/plan_page.dart';
 import 'package:jieyan_app/pages/chat_page.dart';
 import 'package:jieyan_app/pages/article_detail_page.dart';
+import 'package:jieyan_app/pages/edit_profile_page.dart';
 import 'package:jieyan_app/controllers/settings_controller.dart';
+import 'package:jieyan_app/pages/membership_page.dart';
 
 class AppRoutes {
+  static const String login = '/login';
+  static const String articleDetail = '/article_detail';
+  static const String editProfile = '/edit_profile';
+  static const String membership = '/membership';
+
   static final routes = [
     GetPage(
       name: '/home',
-      page: () => const HomePage(),
+      page: () => HomePage(),
       bindings: [
         BindingsBuilder(() {
           Get.put(InteractiveCalendarController());
@@ -56,6 +63,14 @@ class AppRoutes {
       name: '/article_detail/:articleId',
       page: () => ArticleDetailPage(articleId: Get.parameters['articleId']!),
       binding: ArticleBinding(),
+    ),
+    GetPage(
+      name: editProfile,
+      page: () => const EditProfilePage(),
+    ),
+    GetPage(
+      name: membership,
+      page: () => const MembershipPage(),
     ),
   ];
 }

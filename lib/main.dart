@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
       // 注意：同时使用 initialRoute 和 home 会导致冲突
       // 选择一种方式
       // 方式1：使用 home
-      home: const HomePage(),
+      home: HomePage(),
       getPages: AppRoutes.routes, // 添加这一行，注册路由表
       // 方式2：使用 initialRoute (如果使用这种方式，需要在 AppRoutes.routes 中定义 '/home' 路由)
       // initialRoute: '/home',
